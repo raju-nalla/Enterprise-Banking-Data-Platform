@@ -1,120 +1,154 @@
 # 🏦 Enterprise Banking Data Platform
 
-> An end-to-end Enterprise Banking Data Engineering project built using SQL Server, Azure Data Factory, Azure Databricks, Azure Synapse Analytics, ADLS Gen2, Azure SQL Database, Power BI, and Azure DevOps.
-
-![Project Status](https://img.shields.io/badge/Status-In%20Progress-orange)
-![Version](https://img.shields.io/badge/Version-v3.0.0-blue)
-![Database](https://img.shields.io/badge/SQL%20Server-2022-red)
-![Cloud](https://img.shields.io/badge/Azure-Data%20Engineering-0078D4)
+> An end-to-end Enterprise Banking Data Engineering Project built using SQL Server, Python, Azure Data Factory, Azure SQL Database, Azure Data Lake Storage Gen2, Azure Databricks, Azure Synapse Analytics, and Power BI.
 
 ---
 
-# 📌 Project Overview
+# 📖 Project Overview
 
-The Enterprise Banking Data Platform is a production-style Azure Data Engineering project that simulates a real-world banking ecosystem.
+The Enterprise Banking Data Platform simulates a real-world banking ecosystem by implementing transactional database design, enterprise SQL programming, data engineering pipelines, analytics, and reporting.
 
-The project demonstrates the complete lifecycle of banking data:
-
-- Banking Operations (SQL Server)
-- Data Ingestion (Azure Data Factory)
-- Data Lake (ADLS Gen2)
-- Data Processing (Azure Databricks)
-- Data Warehouse (Azure Synapse Analytics)
-- Business Intelligence (Power BI)
-- CI/CD (GitHub & Azure DevOps)
-
-The objective is to build an enterprise-grade portfolio project while following software engineering and data engineering best practices.
+This project follows enterprise software development standards and is built incrementally through versioned releases.
 
 ---
 
-# 🏗️ High-Level Architecture
+# 🎯 Project Objectives
 
-```
-Business Applications
-        │
-        ▼
-Azure SQL Database (OLTP)
-        │
-        ▼
-Azure Data Factory
-        │
-        ▼
-ADLS Gen2
-(Bronze → Silver → Gold)
-        │
-        ▼
-Azure Databricks
-(PySpark + Delta Lake)
-        │
-        ▼
-Azure Synapse Analytics
-        │
-        ▼
-Power BI
-```
+- Design a normalized banking database
+- Implement enterprise SQL programming
+- Simulate real banking transactions
+- Build reporting and analytics
+- Generate realistic banking data
+- Build Azure Data Engineering pipelines
+- Implement Medallion Architecture
+- Develop Power BI dashboards
 
 ---
 
-# 🛠️ Technology Stack
+# 🏗️ Technology Stack
 
 | Category | Technology |
 |-----------|------------|
-| Database | SQL Server 2022 |
-| Cloud | Microsoft Azure |
-| ETL | Azure Data Factory |
-| Storage | ADLS Gen2 |
-| Processing | Azure Databricks |
-| Language | SQL, Python, PySpark |
+| Database | SQL Server |
+| Language | T-SQL |
+| Version Control | Git & GitHub |
+| Data Generation | Python |
+| Cloud Database | Azure SQL Database |
+| Data Integration | Azure Data Factory |
+| Data Lake | Azure Data Lake Storage Gen2 |
+| Processing | Azure Databricks (PySpark) |
 | Analytics | Azure Synapse Analytics |
 | Visualization | Power BI |
-| Version Control | Git & GitHub |
-| CI/CD | Azure DevOps |
-| Secrets Management | Azure Key Vault |
 
 ---
 
-# 📂 Repository Structure
+# 📂 Project Structure
 
-```
+```text
 Enterprise-Banking-Data-Platform
 │
-├── docs/
-│   ├── architecture/
-│   ├── releases/
-│   └── design/
+├── README.md
+├── LICENSE
 │
-├── sql/
-│   ├── schema/
-│   ├── tables/
-│   ├── views/
-│   ├── functions/
-│   ├── procedures/
-│   ├── triggers/
-│   ├── sample-data/
-│   └── test/
+├── docs
+│   ├── CodingStandards.md
+│   ├── Architecture.md
+│   ├── DataDictionary.md
+│   ├── TestingGuide.md
+│   ├── InterviewGuide.md
+│   └── releases
+│       ├── v1.0.md
+│       ├── v2.0.md
+│       ├── v3.0.md
+│       └── v4.0.md
 │
-├── python/
+├── sql
+│   ├── schemas
+│   ├── tables
+│   ├── views
+│   ├── functions
+│   ├── procedures
+│   ├── triggers
+│   └── test
 │
-├── azure/
-│   ├── azure-sql/
-│   ├── adf/
-│   ├── adls/
-│   ├── databricks/
-│   ├── synapse/
-│   └── key-vault/
+├── python
 │
-├── powerbi/
+├── azure
 │
-└── README.md
+├── databricks
+│
+└── powerbi
 ```
 
 ---
 
-# 🚀 Current Progress
+# 🗄️ Database Schemas
 
-## ✅ Version 1.0 – Database Foundation
+| Schema | Purpose |
+|----------|----------|
+| core | Core transactional tables |
+| reporting | Reporting views |
+| audit | Audit logging and tracking |
+| dbo | Utility functions and procedures |
 
-- Database Creation
+---
+
+# 🏦 Core Banking Tables
+
+| Table | Status |
+|---------|--------|
+| Branches | ✅ Completed |
+| Customers | ✅ Completed |
+| Accounts | ✅ Completed |
+| Employees | ✅ Completed |
+| Loans | ✅ Completed |
+| Transactions | ✅ Completed |
+| AuditLogs | ✅ Completed |
+
+---
+
+# 📊 Reporting Views
+
+| View | Status |
+|------|--------|
+| vw_CustomerAccountSummary | ✅ |
+| vw_BranchPerformance | ✅ |
+| vw_TransactionSummary | ✅ |
+| vw_EmployeePerformance | ✅ |
+| vw_LoanPortfolio | ✅ |
+
+---
+
+# ⚙️ SQL Functions
+
+| Function | Purpose | Status |
+|-----------|----------|--------|
+| fn_CalculateAge | Calculate customer age | ✅ |
+| fn_GetFullName | Return customer full name | ✅ |
+| fn_GetAccountBalance | Return account balance | ✅ |
+| fn_CalculateEMI | Calculate monthly EMI | ✅ |
+| fn_GetLoanOutstanding | Outstanding loan amount | ✅ |
+
+---
+
+# 🚀 Stored Procedures
+
+| Procedure | Status |
+|------------|--------|
+| usp_CreateCustomer | 🚧 In Progress |
+| usp_OpenAccount | ⏳ Planned |
+| usp_DepositMoney | ⏳ Planned |
+| usp_WithdrawMoney | ⏳ Planned |
+| usp_TransferFunds | ⏳ Planned |
+| usp_ApplyLoan | ⏳ Planned |
+| usp_ApproveLoan | ⏳ Planned |
+
+---
+
+# 📈 Project Roadmap
+
+## ✅ Version 1.0
+- Database Foundation
 - Schemas
 - Core Tables
 - Constraints
@@ -122,147 +156,135 @@ Enterprise-Banking-Data-Platform
 
 ---
 
-## ✅ Version 2.0 – Reporting Layer
-
-Reporting Views
-
-- vw_CustomerAccounts
-- vw_LoanPortfolio
-- vw_BranchSummary
-- vw_EmployeeHierarchy
-- vw_TransactionHistory
+## ✅ Version 2.0
+- Reporting Views
+- Business Reporting Layer
 
 ---
 
-## ✅ Version 3.0 – Database Programming (Functions)
-
-Implemented Enterprise Scalar Functions
-
-| Function | Description |
-|----------|-------------|
-| fn_CalculateAge | Calculates customer age |
-| fn_CalculateEMI | Calculates loan EMI |
-| fn_GetCustomerFullName | Returns customer full name |
-| fn_GetAccountBalance | Returns account balance |
-| fn_GetLoanOutstanding | Returns outstanding loan amount |
-
-### Features
-
-- Enterprise SQL coding standards
-- Header documentation
-- Reusable business logic
-- Financial calculations
-- Unit test scripts
+## ✅ Version 3.0
+- Scalar Functions
+- Enterprise SQL Programming
+- Unit Test Scripts
 
 ---
 
-# 📅 Upcoming Releases
-
-| Version | Module | Status |
-|----------|---------|--------|
-| v4.0 | Stored Procedures | 🔄 Next |
-| v5.0 | Triggers | ⏳ Planned |
-| v6.0 | Python Banking Data Simulator | ⏳ Planned |
-| v7.0 | Azure SQL & Data Factory | ⏳ Planned |
-| v8.0 | ADLS Gen2 & Databricks | ⏳ Planned |
-| v9.0 | Azure Synapse Analytics | ⏳ Planned |
-| v10.0 | Power BI Dashboard | ⏳ Planned |
+## 🚧 Version 4.0 (Current Sprint)
+- Stored Procedures
+- Enterprise Transactions
+- TRY...CATCH
+- Output Parameters
+- Business Validation
 
 ---
 
-# 📊 Database Modules
-
-### Core Tables
-
-- Branches
-- Customers
-- Accounts
-- Employees
-- Loans
-- Transactions
-- AuditLogs
-
-### Reporting Views
-
-- Customer Accounts
-- Loan Portfolio
-- Branch Summary
-- Employee Hierarchy
-- Transaction History
-
-### User Defined Functions
-
-- Calculate Age
-- Calculate EMI
-- Get Customer Full Name
-- Get Account Balance
-- Get Loan Outstanding
+## 🔜 Version 4.1
+- Centralized Audit Logging
+- audit.usp_WriteAuditLog
+- Audit Reports
 
 ---
 
-# 🎯 Future Enhancements
-
-- Enterprise Stored Procedures
+## 🔜 Version 5.0
 - Database Triggers
-- Banking Data Simulator
-- Incremental Data Pipelines
-- Medallion Architecture
-- Delta Lake
-- Performance Tuning
-- Monitoring & Logging
-- CI/CD Pipeline
-- Infrastructure as Code (Bicep/Terraform)
 
 ---
 
-# 📚 Learning Objectives
-
-This project demonstrates:
-
-- Database Design
-- SQL Programming
-- Azure Data Engineering
-- Data Warehousing
-- ETL Development
-- Delta Lake
-- Cloud Architecture
-- Performance Optimization
-- Enterprise Coding Standards
-- DevOps Practices
+## 🔜 Version 6.0
+- Python Banking Data Simulator
 
 ---
 
-# 📖 Documentation
-
-Project documentation includes:
-
-- Architecture Diagrams
-- Solution Design Document
-- Release Notes
-- SQL Scripts
-- Test Scripts
-- Interview Guide
+## 🔜 Version 7.0
+- Azure SQL Database
+- Azure Data Factory
 
 ---
 
-# 🤝 Contributing
+## 🔜 Version 8.0
+- ADLS Gen2
+- Azure Databricks
+- Bronze → Silver → Gold
 
-Suggestions and improvements are welcome.
+---
 
-Feel free to fork the repository, create a feature branch, and submit a pull request.
+## 🔜 Version 9.0
+- Azure Synapse Analytics
+
+---
+
+## 🔜 Version 10.0
+- Power BI Dashboard
+
+---
+
+# 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| README.md | Project overview |
+| CodingStandards.md | Enterprise SQL coding standards |
+| Architecture.md | Solution architecture |
+| DataDictionary.md | Database object documentation |
+| TestingGuide.md | Testing strategy |
+| InterviewGuide.md | Frequently asked interview questions |
+| Release Notes | Version history |
+
+---
+
+# 🧪 Testing Strategy
+
+Every database object is validated with:
+
+- Positive Test Cases
+- Negative Test Cases
+- Boundary Value Testing
+- Error Handling Validation
+
+---
+
+# 🛡️ Enterprise Development Standards
+
+This project follows enterprise software engineering principles:
+
+- Schema-qualified object names
+- Standardized naming conventions
+- Primary, Foreign, Unique and Check Constraints
+- TRY...CATCH error handling
+- Explicit Transactions
+- Output Parameters
+- Business Rule Validation
+- Modular Design
+- DRY (Don't Repeat Yourself)
+- Git Versioning
+- Comprehensive Documentation
+
+---
+
+# 👨‍💻 Author
+
+**Raju Nalla**
+
+Azure Data Engineer
+
+---
+
+# ⭐ Future Enhancements
+
+- CI/CD with Azure DevOps
+- Azure Key Vault Integration
+- Azure Monitor & Log Analytics
+- Delta Lake Optimization
+- Slowly Changing Dimensions (SCD)
+- Incremental Data Loading
+- Power BI Executive Dashboard
 
 ---
 
 # 📄 License
 
-This project is licensed under the MIT License.
+This project is intended for educational, portfolio, and demonstration purposes.
 
 ---
 
-## ⭐ Project Status
-
-**Current Version:** **v3.0.0**
-
-**Current Sprint:** Sprint 3 – Database Programming
-
-**Next Milestone:** Enterprise Stored Procedures
+⭐ If you found this project useful, consider starring the repository and following the development journey.
