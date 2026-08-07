@@ -1,171 +1,229 @@
-# Enterprise Banking Data Platform using Azure Synapse & Azure Databricks
+# 🏦 Enterprise Banking Data Platform
 
-## Project Overview
-
-This project demonstrates the design and implementation of a production-grade Enterprise Banking Data Platform using Microsoft Azure services and Azure Databricks.
-
-The objective is to simulate a real-world banking environment where data is generated from multiple operational systems, ingested into a cloud-based data lake, transformed using a Medallion Architecture (Bronze, Silver, Gold), and served for enterprise analytics and reporting.
-
-The project is being developed following enterprise software engineering practices, including architecture-first design, documentation, security, monitoring, CI/CD, and production support considerations.
+> An end-to-end Azure Data Engineering project that simulates a production-grade banking platform using SQL Server, Azure Data Factory, Azure Databricks, Azure Synapse Analytics, ADLS Gen2, Delta Lake, and Power BI.
 
 ---
 
-# Business Problem
+# 📌 Project Overview
 
-A retail bank wants to modernize its legacy data platform to enable scalable analytics, improve reporting performance, and provide trusted business data for decision-making.
+This project demonstrates how a modern enterprise banking data platform is designed, built, and deployed using Microsoft Azure services and industry best practices.
 
-The existing environment consists of operational databases, flat files, and external APIs with limited integration, inconsistent reporting, and increasing maintenance costs.
+The solution covers the complete data engineering lifecycle:
 
-This project demonstrates how a modern Azure Data Platform can address these challenges.
-
----
-
-# Project Objectives
-
-* Build an end-to-end Azure Data Engineering solution.
-* Simulate a real Core Banking System using Azure SQL Database.
-* Generate realistic banking data using a Python simulator.
-* Implement a Medallion Architecture using Delta Lake.
-* Orchestrate data movement with Azure Synapse Pipelines.
-* Transform data using Azure Databricks and PySpark.
-* Secure the platform using Azure Key Vault and Managed Identity.
-* Monitor pipelines and platform health.
-* Build reporting datasets for Power BI.
-* Apply enterprise design principles and best practices.
+- Database Design
+- Data Generation
+- Data Ingestion
+- Data Transformation
+- Medallion Architecture
+- Data Warehousing
+- Analytics
+- Monitoring
+- CI/CD
 
 ---
 
-# Technology Stack
+# 🏗️ Solution Architecture
 
-## Azure Services
-
-* Azure SQL Database
-* Azure Data Lake Storage Gen2 (ADLS Gen2)
-* Azure Synapse Analytics
-* Azure Databricks
-* Azure Key Vault
-* Azure Monitor
-* Log Analytics
-* Azure RBAC
-* Managed Identity
-
-## Data Engineering
-
-* PySpark
-* Spark SQL
-* Delta Lake
-* Python
-* SQL
-* Azure Synapse Pipelines
-
-## Reporting
-
-* Power BI
+![Architecture](docs/architecture/Enterprise%20Banking%20Data%20Platform%20Architecture.png)
 
 ---
 
-# Data Sources
+# 🚀 Technology Stack
 
-The platform will simulate multiple enterprise data sources.
-
-* Azure SQL Database (Core Banking System)
-* REST APIs
-* CSV Files
-* Excel Files
-* JSON Files
-* XML Files
-
----
-
-# Medallion Architecture
-
-The platform follows a three-layer Medallion Architecture.
-
-### Bronze Layer
-
-Stores raw source data with minimal transformation.
-
-### Silver Layer
-
-Performs data cleansing, validation, deduplication, and business rule implementation.
-
-### Gold Layer
-
-Provides curated, analytics-ready datasets optimized for reporting and business intelligence.
+| Category | Technologies |
+|-----------|--------------|
+| Database | SQL Server, Azure SQL Database |
+| Data Integration | Azure Data Factory / Azure Synapse Pipelines |
+| Data Lake | Azure Data Lake Storage Gen2 |
+| Processing | Azure Databricks, PySpark |
+| Storage Format | Delta Lake |
+| Analytics | Azure Synapse Analytics |
+| Reporting | Power BI |
+| Programming | SQL, Python, PySpark |
+| DevOps | Git, GitHub, Azure DevOps |
+| Security | Azure Key Vault, Managed Identity, RBAC |
 
 ---
 
-# Project Repository Structure
+# 📂 Project Structure
 
 ```text
 Enterprise-Banking-Data-Platform/
 │
 ├── docs/
+│   ├── architecture/
+│   ├── design/
+│   └── screenshots/
+│
 ├── sql/
-├── simulator/
-├── synapse/
+│   ├── schema/
+│   ├── procedures/
+│   ├── functions/
+│   ├── views/
+│   ├── scripts/
+│   └── sample-data/
+│
+├── data/
+│   ├── raw/
+│   ├── bronze/
+│   ├── silver/
+│   └── gold/
+│
 ├── databricks/
-├── infrastructure/
-├── monitoring/
+│
+├── synapse/
+│
+├── adf/
+│
 ├── powerbi/
-├── tests/
+│
+├── infrastructure/
+│
+├── terraform/
+│
 └── README.md
 ```
 
 ---
 
-# Sprint Roadmap
+# 📊 Banking Database Design
 
-* Sprint 0 – Project Foundation & Architecture
-* Sprint 1 – Banking Database Design
-* Sprint 2 – Banking Data Simulator
-* Sprint 3 – Azure Infrastructure
-* Sprint 4 – Azure SQL & ADLS Gen2
-* Sprint 5 – Synapse Data Ingestion
-* Sprint 6 – Bronze Layer
-* Sprint 7 – Silver Layer
-* Sprint 8 – Gold Layer
-* Sprint 9 – Performance Optimization
-* Sprint 10 – Security
-* Sprint 11 – Monitoring & Logging
-* Sprint 12 – CI/CD
-* Sprint 13 – Power BI
-* Sprint 14 – Production Support
-* Sprint 15 – Interview Readiness
+### Schemas
+
+- core
+- hr
+- lending
+- transactions
+- audit
 
 ---
 
-# Learning Outcomes
+## Tables
 
-By the completion of this project, the following areas will be covered:
-
-* Enterprise Data Platform Architecture
-* Azure Data Engineering
-* Azure Synapse Analytics
-* Azure Databricks
-* Delta Lake
-* Data Modeling
-* Performance Optimization
-* Security
-* Monitoring
-* Production Support
-* CI/CD
-* Interview Preparation
+| Schema | Table | Status |
+|----------|---------|--------|
+| core | Branches | ✅ |
+| core | Customers | ✅ |
+| core | Accounts | ✅ |
+| hr | Employees | ✅ |
+| lending | Loans | ✅ |
+| transactions | Transactions | ✅ |
+| audit | AuditLogs | ✅ |
 
 ---
 
-# Project Status
+# 🔗 Database Relationships
 
-**Current Sprint:** Sprint 0 – Project Foundation & Architecture
+```text
+                             Branches
+                            /        \
+                           /          \
+                          ▼            ▼
+                  Customers      Employees
+                       │              ▲
+                       ▼              │
+                   Accounts           │
+                       │              │
+                       └──────┬───────┘
+                              ▼
+                            Loans
+                              │
+                              ▼
+                        Transactions
 
-Status: 🚧 In Progress
+AuditLogs
+   │
+   └── Tracks all business events
+```
 
 ---
 
-# Author
+# ✅ Features Implemented
 
-**Raju Nalla**
+## Database
 
-Azure Data Engineer
+- Enterprise Database Design
+- Normalized Relational Model
+- Multiple Schemas
+- Business Keys
+- Surrogate Keys
+- Self-Referencing Foreign Keys
 
-This repository is being developed as a production-style learning project with a strong focus on enterprise architecture, engineering best practices, and interview readiness.
+---
+
+## Constraints
+
+- Primary Keys
+- Foreign Keys
+- Unique Constraints
+- Check Constraints
+- Default Constraints
+
+---
+
+## Enterprise Features
+
+- Audit Columns
+- Soft Delete Pattern
+- Enterprise Naming Standards
+- Business Validation Rules
+- Referential Integrity
+- Performance Indexing
+
+---
+
+# 🚧 Current Progress
+
+| Sprint | Status |
+|----------|--------|
+| Sprint 0 – Project Foundation | ✅ Completed |
+| Sprint 1 – Banking Database Design | ✅ Completed |
+| Sprint 2 – Stored Procedures & Business Logic | 🔄 In Progress |
+| Sprint 3 – Sample Data Generation | ⏳ Pending |
+| Sprint 4 – Azure SQL & ADLS | ⏳ Pending |
+| Sprint 5 – Synapse Pipelines | ⏳ Pending |
+| Sprint 6 – Bronze Layer | ⏳ Pending |
+| Sprint 7 – Silver Layer | ⏳ Pending |
+| Sprint 8 – Gold Layer | ⏳ Pending |
+| Sprint 9 – Power BI | ⏳ Pending |
+| Sprint 10 – CI/CD | ⏳ Pending |
+
+---
+
+# 📋 Next Milestones
+
+- Stored Procedures
+- Views
+- Functions
+- Sample Data Generator (Python + Faker)
+- Azure SQL Database
+- Azure Data Factory
+- Azure Databricks
+- Azure Synapse Analytics
+- Delta Lake
+- Power BI Dashboards
+
+---
+
+# 🎯 Learning Objectives
+
+This project demonstrates:
+
+- SQL Server Database Design
+- Enterprise Data Modeling
+- Azure Data Engineering
+- Data Warehousing
+- ETL / ELT Design
+- Medallion Architecture
+- Delta Lake
+- PySpark
+- Azure Synapse
+- Performance Optimization
+- CI/CD
+- Production Best Practices
+
+---
+
+# 📜 License
+
+This project is created for learning, portfolio, and interview preparation purposes.
