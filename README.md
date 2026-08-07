@@ -1,92 +1,31 @@
-# 🏦 Enterprise Banking Data Platform
+# 🚀 Enterprise Banking Data Platform
 
-> An end-to-end Azure Data Engineering project that simulates a production-grade banking platform using SQL Server, Azure Data Factory, Azure Databricks, Azure Synapse Analytics, ADLS Gen2, Delta Lake, and Power BI.
-
----
-
-# 📌 Project Overview
-
-This project demonstrates how a modern enterprise banking data platform is designed, built, and deployed using Microsoft Azure services and industry best practices.
-
-The solution covers the complete data engineering lifecycle:
-
-- Database Design
-- Data Generation
-- Data Ingestion
-- Data Transformation
-- Medallion Architecture
-- Data Warehousing
-- Analytics
-- Monitoring
-- CI/CD
+An end-to-end Azure Data Engineering project that simulates a real-world Enterprise Banking System using SQL Server, Azure Data Factory, Azure Databricks, Azure Synapse Analytics, ADLS Gen2, and Power BI.
 
 ---
 
-# 🏗️ Solution Architecture
+# 📌 Project Status
 
-![Architecture](docs/architecture/Enterprise%20Banking%20Data%20Platform%20Architecture.png)
-
----
-
-# 🚀 Technology Stack
-
-| Category | Technologies |
-|-----------|--------------|
-| Database | SQL Server, Azure SQL Database |
-| Data Integration | Azure Data Factory / Azure Synapse Pipelines |
-| Data Lake | Azure Data Lake Storage Gen2 |
-| Processing | Azure Databricks, PySpark |
-| Storage Format | Delta Lake |
-| Analytics | Azure Synapse Analytics |
-| Reporting | Power BI |
-| Programming | SQL, Python, PySpark |
-| DevOps | Git, GitHub, Azure DevOps |
-| Security | Azure Key Vault, Managed Identity, RBAC |
+| Sprint | Module | Status |
+|---------|--------|--------|
+| Sprint 0 | Project Setup & Documentation | ✅ Completed |
+| Sprint 1 | Database Design | ✅ Completed |
+| Sprint 2 | Reporting Layer | ✅ Completed |
+| Sprint 3 | User Defined Functions | ⏳ Planned |
+| Sprint 4 | Stored Procedures | ⏳ Planned |
+| Sprint 5 | Triggers | ⏳ Planned |
+| Sprint 6 | Sample Data Generation | ⏳ Planned |
+| Sprint 7 | Azure SQL Deployment | ⏳ Planned |
+| Sprint 8 | Azure Data Factory | ⏳ Planned |
+| Sprint 9 | Azure Data Lake Gen2 | ⏳ Planned |
+| Sprint 10 | Azure Databricks | ⏳ Planned |
+| Sprint 11 | Azure Synapse Analytics | ⏳ Planned |
+| Sprint 12 | Power BI Dashboard | ⏳ Planned |
+| Sprint 13 | CI/CD with Azure DevOps | ⏳ Planned |
 
 ---
 
-# 📂 Project Structure
-
-```text
-Enterprise-Banking-Data-Platform/
-│
-├── docs/
-│   ├── architecture/
-│   ├── design/
-│   └── screenshots/
-│
-├── sql/
-│   ├── schema/
-│   ├── procedures/
-│   ├── functions/
-│   ├── views/
-│   ├── scripts/
-│   └── sample-data/
-│
-├── data/
-│   ├── raw/
-│   ├── bronze/
-│   ├── silver/
-│   └── gold/
-│
-├── databricks/
-│
-├── synapse/
-│
-├── adf/
-│
-├── powerbi/
-│
-├── infrastructure/
-│
-├── terraform/
-│
-└── README.md
-```
-
----
-
-# 📊 Banking Database Design
+# 🏦 Database Architecture
 
 ### Schemas
 
@@ -95,13 +34,14 @@ Enterprise-Banking-Data-Platform/
 - lending
 - transactions
 - audit
+- reporting
 
 ---
 
-## Tables
+## Core Tables
 
 | Schema | Table | Status |
-|----------|---------|--------|
+|---------|-------|--------|
 | core | Branches | ✅ |
 | core | Customers | ✅ |
 | core | Accounts | ✅ |
@@ -112,118 +52,106 @@ Enterprise-Banking-Data-Platform/
 
 ---
 
-# 🔗 Database Relationships
+# 📊 Reporting Views
 
-```text
-                             Branches
-                            /        \
-                           /          \
-                          ▼            ▼
-                  Customers      Employees
-                       │              ▲
-                       ▼              │
-                   Accounts           │
-                       │              │
-                       └──────┬───────┘
-                              ▼
-                            Loans
-                              │
-                              ▼
-                        Transactions
+| View | Description | Status |
+|------|-------------|--------|
+| reporting.vw_CustomerAccounts | Customer and Account Information | ✅ |
+| reporting.vw_LoanPortfolio | Loan Portfolio Report | ✅ |
+| reporting.vw_BranchSummary | Branch KPI Dashboard | ✅ |
+| reporting.vw_EmployeeHierarchy | Employee Reporting Structure | ✅ |
+| reporting.vw_TransactionHistory | Complete Transaction Analytics | ✅ |
 
-AuditLogs
-   │
-   └── Tracks all business events
+---
+
+# 🎯 SQL Concepts Covered
+
+✔ Database Design
+
+✔ Schema Design
+
+✔ Primary Keys
+
+✔ Foreign Keys
+
+✔ Constraints
+
+✔ Default Constraints
+
+✔ Check Constraints
+
+✔ Identity Columns
+
+✔ Self Referencing Foreign Keys
+
+✔ INNER JOIN
+
+✔ LEFT JOIN
+
+✔ GROUP BY
+
+✔ Aggregate Functions
+
+✔ COUNT(DISTINCT)
+
+✔ CASE Expressions
+
+✔ COALESCE
+
+✔ Reporting Views
+
+---
+
+# 📂 Project Structure
+
+```
+Enterprise-Banking-Data-Platform
+│
+├── docs/
+│   ├── architecture/
+│   ├── design/
+│   ├── standards/
+│   └── screenshots/
+│
+├── sql/
+│   ├── schema/
+│   ├── views/
+│   ├── functions/
+│   ├── procedures/
+│   ├── triggers/
+│   ├── sample-data/
+│   └── test/
+│
+├── adf/
+├── databricks/
+├── synapse/
+├── powerbi/
+├── infrastructure/
+└── README.md
 ```
 
 ---
 
-# ✅ Features Implemented
+# 🚀 Next Phase
 
-## Database
+The next phase focuses on implementing business logic using SQL Server programming objects.
 
-- Enterprise Database Design
-- Normalized Relational Model
-- Multiple Schemas
-- Business Keys
-- Surrogate Keys
-- Self-Referencing Foreign Keys
-
----
-
-## Constraints
-
-- Primary Keys
-- Foreign Keys
-- Unique Constraints
-- Check Constraints
-- Default Constraints
-
----
-
-## Enterprise Features
-
-- Audit Columns
-- Soft Delete Pattern
-- Enterprise Naming Standards
-- Business Validation Rules
-- Referential Integrity
-- Performance Indexing
-
----
-
-# 🚧 Current Progress
-
-| Sprint | Status |
-|----------|--------|
-| Sprint 0 – Project Foundation | ✅ Completed |
-| Sprint 1 – Banking Database Design | ✅ Completed |
-| Sprint 2 – Stored Procedures & Business Logic | 🔄 In Progress |
-| Sprint 3 – Sample Data Generation | ⏳ Pending |
-| Sprint 4 – Azure SQL & ADLS | ⏳ Pending |
-| Sprint 5 – Synapse Pipelines | ⏳ Pending |
-| Sprint 6 – Bronze Layer | ⏳ Pending |
-| Sprint 7 – Silver Layer | ⏳ Pending |
-| Sprint 8 – Gold Layer | ⏳ Pending |
-| Sprint 9 – Power BI | ⏳ Pending |
-| Sprint 10 – CI/CD | ⏳ Pending |
-
----
-
-# 📋 Next Milestones
-
+- User Defined Functions
 - Stored Procedures
-- Views
-- Functions
-- Sample Data Generator (Python + Faker)
-- Azure SQL Database
-- Azure Data Factory
+- Triggers
+- Sample Data Generation
+- Azure SQL Database Deployment
+- Azure Data Factory Pipelines
 - Azure Databricks
 - Azure Synapse Analytics
-- Delta Lake
-- Power BI Dashboards
+- Power BI Dashboard
 
 ---
 
-# 🎯 Learning Objectives
+# 👨‍💻 Author
 
-This project demonstrates:
+**Raju Nalla**
 
-- SQL Server Database Design
-- Enterprise Data Modeling
-- Azure Data Engineering
-- Data Warehousing
-- ETL / ELT Design
-- Medallion Architecture
-- Delta Lake
-- PySpark
-- Azure Synapse
-- Performance Optimization
-- CI/CD
-- Production Best Practices
+Azure Data Engineer
 
----
-
-# 📜 License
-
-This project is created for learning, portfolio, and interview preparation purposes.
+Enterprise Banking Data Platform
