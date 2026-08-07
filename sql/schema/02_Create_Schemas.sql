@@ -1,0 +1,17 @@
+USE EnterpriseBankingDB;
+GO
+
+CREATE SCHEMA core;
+GO
+
+CREATE SCHEMA transactions;
+GO
+
+CREATE SCHEMA lending;
+GO
+
+CREATE SCHEMA hr;
+GO
+
+CREATE SCHEMA audit;
+GO
