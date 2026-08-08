@@ -1,237 +1,418 @@
-# Enterprise Banking Data Platform
+# 🏦 Enterprise Banking Data Platform
 
-A production-grade Banking Data Platform built using Microsoft SQL Server following enterprise database development standards.
+A production-grade **Enterprise Banking Database** built using **Microsoft SQL Server** following enterprise database development standards.
 
----
-
-# Project Status
-
-## Completed Modules
-
-### Database Foundation
-- [x] Database Creation
-- [x] Schemas
-- [x] Master Tables
-- [x] Core Tables
-- [x] Constraints
-- [x] Primary Keys
-- [x] Foreign Keys
-- [x] Default Constraints
-- [x] Check Constraints
-- [x] Indexes
+This project demonstrates real-world banking operations including customer management, account management, transactions, loan processing, reporting, and audit logging using production-quality T-SQL.
 
 ---
 
-## Stored Procedures
+# 📌 Project Overview
 
-### Customer Module
+This project simulates the backend database of a banking system where customers can:
 
-### 01. usp_CreateCustomer
-Status : ✅ Completed
+- Register customers
+- Open bank accounts
+- Deposit cash
+- Withdraw cash
+- Transfer funds
+- Apply for loans
+- Approve/Reject loans
+- Pay Loan EMI
+- Close loans
+- Generate reports
+- Maintain audit history
 
-Features
+The database is designed using enterprise best practices including:
 
-- Customer creation
-- Duplicate Customer Number validation
-- Duplicate Email validation
-- Mandatory field validation
-- Gender validation
-- DOB validation
-- Transaction handling
-- TRY...CATCH
-- Output parameters
-- Enterprise error codes
-
-Testing
-
-- Valid Customer
-- Duplicate Customer Number
-- Duplicate Email
-- Missing Mandatory Fields
-- Invalid Gender
-- Future DOB
-- NULL Email
-- Successful Inserts
-
-Status
-
-Production Ready
+- ACID Transactions
+- TRY...CATCH Error Handling
+- Business Rule Validation
+- Audit Logging
+- Sequences
+- Constraints
+- Foreign Keys
+- Indexes
+- Production Ready Stored Procedures
 
 ---
 
-### 02. usp_UpdateCustomer
-Status : ✅ Completed
+# 🛠 Tech Stack
 
-Features
+- Microsoft SQL Server
+- SQL Server Management Studio (SSMS)
+- T-SQL
+- Git
+- GitHub
 
-- Update customer details
-- Partial updates supported
-- Optional parameters
-- Duplicate Email validation
-- Gender validation
-- DOB validation
-- Customer existence validation
-- Transaction handling
-- TRY...CATCH
-- Audit columns update
-- Output parameters
+Future Integration:
 
-Testing
-
-- Successful update
-- Customer not found
-- Duplicate email
-- Invalid DOB
-- Invalid gender
-- No changes supplied
-- NULL optional values
-
-Status
-
-Production Ready
+- Azure SQL Database
+- Azure Data Factory
+- Azure Data Lake Storage Gen2
+- Azure Databricks
+- Azure Synapse Analytics
+- Power BI
+- Azure DevOps
 
 ---
 
-### 03. usp_DeactivateCustomer
-Status : ✅ Completed
+# 📂 Project Structure
 
-Features
-
-- Soft delete implementation
-- Customer existence validation
-- Already inactive validation
-- Active account validation
-- Transaction handling
-- TRY...CATCH
-- Output parameters
-- Audit update
-
-Notes
-
-Loan validation section prepared.
-Will be enabled after Loan module implementation.
-
-Testing
-
-- Successful Deactivation
-- Customer Not Found
-- Already Inactive Customer
-- Customer With Active Accounts
-- Customer Without Accounts
-
-Status
-
-Production Ready
-
----
-
-## Folder Structure
-
-```
-EnterpriseBankingPlatform
+```text
+Enterprise-Banking-Data-Platform
 │
 ├── Database
+│   ├── 01_Database.sql
+│   ├── 02_Schemas.sql
+│   ├── 03_Tables.sql
+│   ├── 04_Constraints.sql
+│   ├── 05_Indexes.sql
+│   ├── 06_Sequences.sql
+│   ├── 07_StoredProcedures.sql
+│   ├── 08_ReportingProcedures.sql
+│   ├── 09_Triggers.sql
+│   ├── 10_TestCases.sql
+│   └── 11_SampleData.sql
 │
-├── Tables
+├── Architecture
 │
-├── StoredProcedures
-│   ├── 01_usp_CreateCustomer.sql
-│   ├── 02_usp_UpdateCustomer.sql
-│   ├── 03_usp_DeactivateCustomer.sql
-│   ├── 04_usp_GetCustomerByID.sql   (Next)
-│   ├── 05_usp_GetAllCustomers.sql
-│   ├── 06_usp_SearchCustomers.sql
-│   └── ...
+├── Images
 │
-├── TestCases
+├── README.md
 │
-└── README.md
+└── LICENSE
 ```
 
 ---
 
-# Coding Standards
+# 🗂 Database Schemas
 
-- Production Ready SQL
-- Naming Standards
-- TRY...CATCH
+| Schema | Purpose |
+|---------|---------|
+| core | Customers, Accounts, Branches, Employees |
+| lending | Loan Management |
+| transactions | Banking Transactions |
+| audit | Audit Logs |
+| security | Roles & Permissions |
+| reference | Lookup Tables |
+
+---
+
+# 🗃 Database Objects
+
+| Object | Status |
+|---------|--------|
+| Database | ✅ |
+| Schemas | ✅ |
+| Tables | ✅ |
+| Constraints | ✅ |
+| Foreign Keys | ✅ |
+| Indexes | ✅ |
+| Sequences | ✅ |
+| Stored Procedures | ✅ |
+| Reporting Procedures | ✅ |
+| Audit Logging | ✅ |
+| Views | ⏳ |
+| Triggers | ⏳ |
+
+---
+
+# 👥 Customer Module
+
+### ✅ usp_CreateCustomer
+
+- Create Customer
+- Duplicate Validation
+- Email Validation
+- DOB Validation
+- Gender Validation
+
+---
+
+### ✅ usp_UpdateCustomer
+
+- Update Customer Details
+- Optional Parameters
+- Duplicate Email Validation
+
+---
+
+### ✅ usp_DeactivateCustomer
+
+- Soft Delete
+- Active Account Validation
+- Loan Validation
+
+---
+
+# 🏦 Account Module
+
+### ✅ usp_OpenAccount
+
+- Open Savings / Current Account
+- Initial Deposit
+- Account Validation
+
+---
+
+### ✅ usp_Deposit
+
+- Cash Deposit
+- Balance Update
+- Transaction Logging
+
+---
+
+### ✅ usp_Withdraw
+
+- Cash Withdrawal
+- Available Balance Validation
+- Transaction History
+
+---
+
+### ✅ usp_FundTransfer
+
+- Sender Validation
+- Receiver Validation
+- Double Entry Transaction
+- Atomic Transaction Handling
+
+---
+
+# 💰 Loan Module
+
+### ✅ usp_ApplyLoan
+
+- Loan Application
+- EMI Calculation
+- Loan Number Generation
+
+---
+
+### ✅ usp_ApproveLoan
+
+- Loan Approval
+- Loan Disbursement
+- Deposit to Customer Account
+- Transaction Creation
+
+---
+
+### ✅ usp_RejectLoan
+
+- Reject Pending Loan
+- Store Rejection Reason
+- Audit Logging
+
+---
+
+### ✅ usp_PayEMI
+
+- EMI Validation
+- Balance Validation
+- Outstanding Amount Update
+- Transaction Logging
+- Auto Loan Closure Support
+
+---
+
+### ✅ usp_CloseLoan
+
+- Close Fully Paid Loan
+- Closed Date Update
+- Audit Log Entry
+
+---
+
+### ✅ usp_GetLoanStatement
+
+Returns
+
+- Customer Details
+- Account Details
+- Loan Information
+- Transaction History
+
+---
+
+# 📊 Reporting Stored Procedures
+
+## ✅ usp_GetCustomerLoanSummary
+
+Returns
+
+- Total Loans
+- Active Loans
+- Closed Loans
+- Rejected Loans
+- Principal Amount
+- Outstanding Amount
+- Loan Completion %
+- Loan Details
+
+---
+
+## ✅ usp_GetAccountStatement
+
+Returns
+
+- Opening Balance
+- Closing Balance
+- Deposits
+- Withdrawals
+- Transfers
+- EMI Paid
+- Transaction History
+
+---
+
+## ✅ usp_BranchDailySummary
+
+Returns
+
+- Customers Created
+- Accounts Opened
+- Deposits
+- Withdrawals
+- Transfers
+- Loan Applications
+- Loans Approved
+- Loans Rejected
+- EMI Collection
+- Net Cash Flow
+
+---
+
+## ✅ usp_DashboardSummary
+
+Enterprise Dashboard including
+
+- Customers
+- Accounts
 - Transactions
-- Output Parameters
-- Business Error Codes
-- Defensive Programming
-- Enterprise Comments
-- Soft Delete Pattern
+- Deposits
+- Withdrawals
+- Transfers
+- EMI Collection
+- Loans
+- Outstanding Amount
+- Branch Statistics
+- Today's Business Summary
 
 ---
 
-# Business Rules Implemented
+# 🔐 Enterprise Features
 
-✔ Customer Number must be unique
-
-✔ Email must be unique
-
-✔ Mandatory fields validated
-
-✔ DOB cannot be future date
-
-✔ Gender validation
-
-✔ Partial updates supported
-
-✔ Soft Delete implemented
-
-✔ Customer cannot be deactivated twice
-
-✔ Customer cannot be deactivated with Active Accounts
+- ACID Transactions
+- TRY...CATCH
+- Transaction Rollback
+- Business Rule Validation
+- Audit Logging
+- Soft Delete
+- Identity Columns
+- Sequences
+- Foreign Keys
+- Check Constraints
+- Default Constraints
+- Composite Indexes
+- Production Error Handling
 
 ---
 
-# Error Codes
+# 🧪 Testing
 
-| Code | Description |
-|------|-------------|
-|0|Success|
-|1001|Duplicate Customer Number|
-|1002|Duplicate Email|
-|1003|Invalid Date Of Birth|
-|1004|Mandatory Fields Missing|
-|1005|Invalid Gender|
-|1006|Customer Not Found|
-|1007|Nothing To Update|
-|1008|Customer Already Inactive|
-|1009|Customer Has Active Accounts|
-|1010|Customer Has Active Loans (Future)|
-|9999|Unexpected SQL Error|
+Each stored procedure has been tested for:
 
----
+✅ Valid Input
 
-# Current Progress
+✅ Invalid Input
 
-Completed
+✅ Duplicate Records
 
-- Database Design
-- Core Tables
-- Customer Module
-- Create Customer SP
-- Update Customer SP
-- Deactivate Customer SP
+✅ Missing Records
 
-Next
+✅ Business Rule Violations
 
-- usp_GetCustomerByID
-- usp_GetAllCustomers
-- Search Customer
-- Branch Module
-- Account Module
-- Loan Module
-- Transaction Module
-- Views
-- Functions
-- Triggers
-- Performance Tuning
+✅ Rollback Scenarios
+
+✅ Exception Handling
 
 ---
 
-Last Updated
+# 📈 Project Progress
 
-08-Aug-2026
+| Module | Status |
+|---------|--------|
+| Database Design | ✅ Completed |
+| Customer Module | ✅ Completed |
+| Branch Module | ✅ Completed |
+| Employee Module | ✅ Completed |
+| Account Module | ✅ Completed |
+| Transaction Module | ✅ Completed |
+| Loan Module | ✅ Completed |
+| Reporting Module | ✅ Completed |
+| Audit Logging | ✅ Completed |
+| Sample Data | ✅ Completed |
+| Test Cases | ✅ Completed |
+| Views | ⏳ Next |
+| Triggers | ⏳ Next |
+| Performance Tuning | ⏳ Next |
+| Azure Integration | ⏳ Planned |
+
+---
+
+# 🚀 Future Enhancements
+
+- SQL Views
+- Database Triggers
+- User Defined Functions
+- Performance Optimization
+- Azure SQL Database Deployment
+- Azure Data Factory Pipelines
+- Azure Data Lake Storage Gen2
+- Azure Databricks
+- Azure Synapse Analytics
+- Power BI Dashboard
+- CI/CD using Azure DevOps
+
+---
+
+# 📸 Screenshots
+
+The repository includes screenshots demonstrating:
+
+- Customer Registration
+- Account Creation
+- Cash Deposit
+- Cash Withdrawal
+- Fund Transfer
+- Loan Approval
+- Loan Rejection
+- EMI Payment
+- Loan Closure
+- Loan Statement
+- Reporting Procedures
+- Dashboard Summary
+
+---
+
+# 👨‍💻 Author
+
+**Raju Nalla**
+
+Azure Data Engineer
+
+GitHub: https://github.com/raju-nalla
+
+LinkedIn: https://linkedin.com/in/raju-nalla
+
+---
+
+# ⭐ Project Status
+
+**Version:** 1.0
+
+**Status:** Production Ready (SQL Module)
+
+Next Phase: Azure Data Engineering Implementation
