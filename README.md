@@ -1,399 +1,357 @@
 # 🏦 Enterprise Banking Data Platform
 
-A production-grade **Enterprise Banking Database** built using **Microsoft SQL Server** following enterprise database development standards.
-
-This project demonstrates real-world banking operations including customer management, account management, transactions, loan processing, reporting, and audit logging using production-quality T-SQL.
+A production-style Enterprise Banking Data Platform built using SQL Server, with the next phase focused on Azure Data Engineering services including Azure Data Factory, Azure Databricks, ADLS Gen2, Azure Synapse Analytics, Azure SQL Database, Azure Key Vault, and CI/CD.
 
 ---
 
 # 📌 Project Overview
 
-This project simulates the backend database of a banking system where customers can:
+This project simulates a real-world banking system by implementing:
 
-- Register customers
-- Open bank accounts
-- Deposit cash
-- Withdraw cash
-- Transfer funds
-- Apply for loans
-- Approve/Reject loans
-- Pay Loan EMI
-- Close loans
-- Generate reports
-- Maintain audit history
-
-The database is designed using enterprise best practices including:
-
-- ACID Transactions
-- TRY...CATCH Error Handling
-- Business Rule Validation
+- Customer Management
+- Account Management
+- Loan Processing
+- EMI Payments
+- Money Transfers
+- Transaction Management
+- Reporting & Analytics
 - Audit Logging
-- Sequences
-- Constraints
-- Foreign Keys
-- Indexes
-- Production Ready Stored Procedures
+- Business Triggers
+
+The Azure implementation will extend this operational database into a modern cloud data platform using the Medallion Architecture (Bronze → Silver → Gold).
 
 ---
 
-# 🛠 Tech Stack
+# 🏗️ Technology Stack
 
-- Microsoft SQL Server
-- SQL Server Management Studio (SSMS)
+## Database
+
+- SQL Server 2022
 - T-SQL
-- Git
-- GitHub
+- Stored Procedures
+- Views
+- Triggers
+- Sequences
+- Transactions
+- Error Handling
 
-Future Integration:
+## Azure (Next Phase)
 
 - Azure SQL Database
 - Azure Data Factory
-- Azure Data Lake Storage Gen2
 - Azure Databricks
 - Azure Synapse Analytics
-- Power BI
+- Azure Data Lake Storage Gen2
+- Azure Key Vault
+- Delta Lake
+- PySpark
+- GitHub
 - Azure DevOps
 
 ---
 
 # 📂 Project Structure
 
-```text
+```
 Enterprise-Banking-Data-Platform
+
 │
 ├── Database
-│   ├── 01_Database.sql
-│   ├── 02_Schemas.sql
-│   ├── 03_Tables.sql
-│   ├── 04_Constraints.sql
-│   ├── 05_Indexes.sql
-│   ├── 06_Sequences.sql
-│   ├── 07_StoredProcedures.sql
-│   ├── 08_ReportingProcedures.sql
-│   ├── 09_Triggers.sql
-│   ├── 10_TestCases.sql
-│   └── 11_SampleData.sql
 │
-├── Architecture
+├── 01_Schemas
+├── 02_Tables
+├── 03_Constraints
+├── 04_Sequences
+├── 05_Sample_Data
+├── 06_Stored_Procedures
+├── 07_Views
+├── 08_Triggers
+├── 09_Testing
 │
-├── Images
+├── Azure
 │
-├── README.md
+├── ADF
+├── Databricks
+├── Synapse
+├── ADLS
+├── KeyVault
+├── CI_CD
 │
-└── LICENSE
+└── README.md
 ```
 
 ---
 
-# 🗂 Database Schemas
+# 🗄 Database Schemas
 
 | Schema | Purpose |
-|---------|---------|
-| core | Customers, Accounts, Branches, Employees |
-| lending | Loan Management |
+|----------|-----------------------------|
+| core | Customers, Accounts, Employees, Branches |
+| lending | Loans |
 | transactions | Banking Transactions |
+| reporting | Reporting Views |
 | audit | Audit Logs |
-| security | Roles & Permissions |
-| reference | Lookup Tables |
 
 ---
 
-# 🗃 Database Objects
+# 📊 Database Objects
 
-| Object | Status |
-|---------|--------|
-| Database | ✅ |
-| Schemas | ✅ |
-| Tables | ✅ |
-| Constraints | ✅ |
-| Foreign Keys | ✅ |
-| Indexes | ✅ |
-| Sequences | ✅ |
-| Stored Procedures | ✅ |
-| Reporting Procedures | ✅ |
-| Audit Logging | ✅ |
-| Views | ⏳ |
-| Triggers | ⏳ |
+## Tables
 
----
-
-# 👥 Customer Module
-
-### ✅ usp_CreateCustomer
-
-- Create Customer
-- Duplicate Validation
-- Email Validation
-- DOB Validation
-- Gender Validation
-
----
-
-### ✅ usp_UpdateCustomer
-
-- Update Customer Details
-- Optional Parameters
-- Duplicate Email Validation
-
----
-
-### ✅ usp_DeactivateCustomer
-
-- Soft Delete
-- Active Account Validation
-- Loan Validation
-
----
-
-# 🏦 Account Module
-
-### ✅ usp_OpenAccount
-
-- Open Savings / Current Account
-- Initial Deposit
-- Account Validation
-
----
-
-### ✅ usp_Deposit
-
-- Cash Deposit
-- Balance Update
-- Transaction Logging
-
----
-
-### ✅ usp_Withdraw
-
-- Cash Withdrawal
-- Available Balance Validation
-- Transaction History
-
----
-
-### ✅ usp_FundTransfer
-
-- Sender Validation
-- Receiver Validation
-- Double Entry Transaction
-- Atomic Transaction Handling
-
----
-
-# 💰 Loan Module
-
-### ✅ usp_ApplyLoan
-
-- Loan Application
-- EMI Calculation
-- Loan Number Generation
-
----
-
-### ✅ usp_ApproveLoan
-
-- Loan Approval
-- Loan Disbursement
-- Deposit to Customer Account
-- Transaction Creation
-
----
-
-### ✅ usp_RejectLoan
-
-- Reject Pending Loan
-- Store Rejection Reason
-- Audit Logging
-
----
-
-### ✅ usp_PayEMI
-
-- EMI Validation
-- Balance Validation
-- Outstanding Amount Update
-- Transaction Logging
-- Auto Loan Closure Support
-
----
-
-### ✅ usp_CloseLoan
-
-- Close Fully Paid Loan
-- Closed Date Update
-- Audit Log Entry
-
----
-
-### ✅ usp_GetLoanStatement
-
-Returns
-
-- Customer Details
-- Account Details
-- Loan Information
-- Transaction History
-
----
-
-# 📊 Reporting Stored Procedures
-
-## ✅ usp_GetCustomerLoanSummary
-
-Returns
-
-- Total Loans
-- Active Loans
-- Closed Loans
-- Rejected Loans
-- Principal Amount
-- Outstanding Amount
-- Loan Completion %
-- Loan Details
-
----
-
-## ✅ usp_GetAccountStatement
-
-Returns
-
-- Opening Balance
-- Closing Balance
-- Deposits
-- Withdrawals
-- Transfers
-- EMI Paid
-- Transaction History
-
----
-
-## ✅ usp_BranchDailySummary
-
-Returns
-
-- Customers Created
-- Accounts Opened
-- Deposits
-- Withdrawals
-- Transfers
-- Loan Applications
-- Loans Approved
-- Loans Rejected
-- EMI Collection
-- Net Cash Flow
-
----
-
-## ✅ usp_DashboardSummary
-
-Enterprise Dashboard including
+### Core
 
 - Customers
 - Accounts
-- Transactions
-- Deposits
-- Withdrawals
-- Transfers
-- EMI Collection
+- Employees
+- Branches
+
+### Lending
+
 - Loans
-- Outstanding Amount
-- Branch Statistics
-- Today's Business Summary
+
+### Transactions
+
+- Transactions
+
+### Audit
+
+- AuditLogs
 
 ---
 
-# 🔐 Enterprise Features
+# 🔢 Sequences
 
-- ACID Transactions
-- TRY...CATCH
-- Transaction Rollback
-- Business Rule Validation
-- Audit Logging
-- Soft Delete
-- Identity Columns
-- Sequences
-- Foreign Keys
-- Check Constraints
-- Default Constraints
-- Composite Indexes
-- Production Error Handling
+Implemented enterprise numbering using SQL Server Sequences.
+
+Examples:
+
+- CustomerNumber
+- AccountNumber
+- LoanNumber
+- TransactionNumber
+- EmployeeNumber
+
+---
+
+# ⚙ Stored Procedures
+
+## Customer Module
+
+- ✅ usp_CreateCustomer
+- ✅ usp_UpdateCustomer
+- ✅ usp_DeactivateCustomer
+- ✅ usp_SearchCustomers
+
+---
+
+## Account Module
+
+- ✅ usp_OpenAccount
+- ✅ usp_DepositMoney
+- ✅ usp_WithdrawMoney
+- ✅ usp_TransferMoney
+
+---
+
+## Loan Module
+
+- ✅ usp_ApplyLoan
+- ✅ usp_ApproveLoan
+- ✅ usp_RejectLoan
+- ✅ usp_PayEMI
+- ✅ usp_CloseLoan
+- ✅ usp_GetLoanStatement
+
+---
+
+## Reporting Module
+
+- ✅ usp_GetCustomerLoanSummary
+- ✅ usp_GetAccountStatement
+- ✅ usp_BranchDailySummary
+- ✅ usp_DashboardSummary
+
+---
+
+# 📈 Reporting Views
+
+- ✅ vw_CustomerAccounts
+- ✅ vw_TransactionHistory
+- ✅ vw_LoanPortfolio
+- ✅ vw_BranchSummary
+- ✅ vw_EmployeeHierarchy
+
+---
+
+# 🔄 Triggers
+
+## Audit Triggers
+
+- ✅ trg_Customers_Audit
+- ✅ trg_Accounts_Audit
+- ✅ trg_Loans_Audit
+
+Automatically captures:
+
+- Old Values
+- New Values
+- Updated By
+- Date & Time
+- Remarks
+
+---
+
+## Business Triggers
+
+### Prevent Transaction Delete
+
+```
+trg_Transactions_PreventDelete
+```
+
+Prevents deletion of completed financial transactions.
+
+---
+
+### Prevent Transaction Update
+
+```
+trg_Transactions_PreventUpdate
+```
+
+Prevents modification of completed transactions.
+
+---
+
+### Audit Defaults
+
+```
+trg_AuditLogs_Defaults
+```
+
+Automatically populates:
+
+- ActionDate
+- CreatedDate
+- IsActive
+
+---
+
+# 📝 Audit Framework
+
+All business-critical changes are recorded inside:
+
+```
+audit.AuditLogs
+```
+
+Captured Information:
+
+- Table Name
+- Record ID
+- Action Type
+- Employee ID
+- Old Values
+- New Values
+- Remarks
+- Action Date
+
+---
+
+# 🔒 Business Rules Implemented
+
+✔ Customer validation
+
+✔ Account validation
+
+✔ Loan eligibility
+
+✔ Loan approval
+
+✔ Loan rejection
+
+✔ Loan disbursement
+
+✔ EMI payment validation
+
+✔ Loan closure validation
+
+✔ Insufficient balance validation
+
+✔ Prevent duplicate operations
+
+✔ Audit Logging
+
+✔ Transaction Protection
 
 ---
 
 # 🧪 Testing
 
-Each stored procedure has been tested for:
+All stored procedures and triggers were tested with:
 
-✅ Valid Input
-
-✅ Invalid Input
-
-✅ Duplicate Records
-
-✅ Missing Records
-
-✅ Business Rule Violations
-
-✅ Rollback Scenarios
-
-✅ Exception Handling
+- Successful scenarios
+- Invalid inputs
+- Business validation failures
+- Transaction rollback
+- Error handling
+- Audit verification
 
 ---
 
-# 📈 Project Progress
+# 📊 Current Project Status
 
 | Module | Status |
-|---------|--------|
+|----------|--------|
 | Database Design | ✅ Completed |
-| Customer Module | ✅ Completed |
-| Branch Module | ✅ Completed |
-| Employee Module | ✅ Completed |
-| Account Module | ✅ Completed |
-| Transaction Module | ✅ Completed |
-| Loan Module | ✅ Completed |
-| Reporting Module | ✅ Completed |
-| Audit Logging | ✅ Completed |
+| Schemas | ✅ Completed |
+| Tables | ✅ Completed |
+| Constraints | ✅ Completed |
+| Sequences | ✅ Completed |
 | Sample Data | ✅ Completed |
-| Test Cases | ✅ Completed |
-| Views | ⏳ Next |
-| Triggers | ⏳ Next |
-| Performance Tuning | ⏳ Next |
-| Azure Integration | ⏳ Planned |
+| Stored Procedures | ✅ Completed |
+| Views | ✅ Completed |
+| Triggers | ✅ Completed |
+| Testing | ✅ Completed |
+| Documentation | ✅ Completed |
+| Azure SQL | ⏳ Planned |
+| Azure Data Factory | ⏳ Planned |
+| Azure Databricks | ⏳ Planned |
+| ADLS Gen2 | ⏳ Planned |
+| Azure Synapse | ⏳ Planned |
+| Azure Key Vault | ⏳ Planned |
+| CI/CD | ⏳ Planned |
 
 ---
 
-# 🚀 Future Enhancements
+# 🚀 Next Phase
 
-- SQL Views
-- Database Triggers
-- User Defined Functions
-- Performance Optimization
-- Azure SQL Database Deployment
-- Azure Data Factory Pipelines
-- Azure Data Lake Storage Gen2
-- Azure Databricks
-- Azure Synapse Analytics
-- Power BI Dashboard
-- CI/CD using Azure DevOps
+The SQL Server operational database will be integrated with Azure services:
 
----
-
-# 📸 Screenshots
-
-The repository includes screenshots demonstrating:
-
-- Customer Registration
-- Account Creation
-- Cash Deposit
-- Cash Withdrawal
-- Fund Transfer
-- Loan Approval
-- Loan Rejection
-- EMI Payment
-- Loan Closure
-- Loan Statement
-- Reporting Procedures
-- Dashboard Summary
+```
+Azure SQL Database
+        │
+        ▼
+Azure Data Factory
+        │
+        ▼
+ADLS Gen2 (Bronze)
+        │
+        ▼
+Azure Databricks
+        │
+        ▼
+Silver Layer
+        │
+        ▼
+Gold Layer
+        │
+        ▼
+Azure Synapse Analytics
+        │
+        ▼
+Power BI Dashboard
+```
 
 ---
 
@@ -403,16 +361,18 @@ The repository includes screenshots demonstrating:
 
 Azure Data Engineer
 
-GitHub: https://github.com/raju-nalla
+GitHub:
+https://github.com/raju-nalla
 
-LinkedIn: https://linkedin.com/in/raju-nalla
+LinkedIn:
+https://www.linkedin.com/in/raju-nalla
 
 ---
 
 # ⭐ Project Status
 
-**Version:** 1.0
+**Version:** v1.0
 
-**Status:** Production Ready (SQL Module)
+**Current Phase:** SQL Server Database Completed ✅
 
-Next Phase: Azure Data Engineering Implementation
+**Next Phase:** Azure Data Engineering Pipeline 🚀
