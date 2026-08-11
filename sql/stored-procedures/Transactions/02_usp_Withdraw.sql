@@ -1,178 +1,256 @@
-/*
-==============================================================================
-Stored Procedure : dbo.usp_Withdraw
-Author           : Raju Nalla
-Project          : Enterprise Banking Data Platform
-Description      : Withdraw money from a customer account.
-==============================================================================
+USE [EnterpriseBankingDB]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+/******************************************************************************
+Project      : Enterprise Banking Data Platform
+Module       : Transaction Management
+Object Type  : Stored Procedure
+Object Name  : dbo.usp_Withdraw
+
+Author        : Raju Nalla
+Created On    : 11-Aug-2026
+Version       : 2.0
+
+Description:
+Withdraws money from an account and records the transaction.
+
 Business Rules
---------------
+
 1. Account must exist.
 2. Account must be Active.
-3. Withdrawal amount must be greater than zero.
-4. Sufficient balance must be available.
-5. Update Account Balance.
-6. Insert Transaction History.
-7. Commit or Rollback as one transaction.
-==============================================================================
-*/
+3. Withdrawal Amount must be greater than zero.
+4. Transaction Mode must be valid.
+5. Sufficient Balance must be available.
+6. Updates Account Balance.
+7. Inserts Transaction History.
+8. Commit/Rollback as one transaction.
+
+Return Codes
+
+0       Success
+3001    Invalid Amount
+3002    Account not found or inactive
+3003    Insufficient Balance
+3004    Invalid Transaction Mode
+9999    Unexpected SQL Error
+******************************************************************************/
 
 CREATE OR ALTER PROCEDURE dbo.usp_Withdraw
 (
-      @AccountID         INT
-    , @Amount            DECIMAL(18,2)
-    , @TransactionMode   VARCHAR(20)
-    , @Remarks           VARCHAR(255) = NULL
+      @AccountID              INT
+    , @Amount                 DECIMAL(18,2)
+    , @TransactionMode        VARCHAR(20)
+    , @ProcessedByEmployeeID  INT = NULL
+    , @Remarks                VARCHAR(255) = NULL
 )
 AS
 BEGIN
 
-    SET NOCOUNT ON;
-    SET XACT_ABORT ON;
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
 
-    DECLARE
-          @CurrentBalance        DECIMAL(18,2)
-        , @NewBalance            DECIMAL(18,2)
-        , @TransactionNumber     VARCHAR(30);
+DECLARE
+      @CurrentBalance     DECIMAL(18,2)
+    , @NewBalance         DECIMAL(18,2)
+    , @TransactionNumber  VARCHAR(30);
 
-    -------------------------------------------------------------
-    -- Validation
-    -------------------------------------------------------------
+BEGIN TRY
+
+    BEGIN TRANSACTION;
+
+    ------------------------------------------------------------
+    -- Validate Amount
+    ------------------------------------------------------------
 
     IF @Amount <= 0
     BEGIN
-        THROW 50001, 'Withdrawal amount must be greater than zero.', 1;
-    END
 
-    IF NOT EXISTS
+        SELECT
+
+            NULL AS TransactionNumber,
+            NULL AS CurrentBalance,
+            3001 AS StatusCode,
+            'Withdrawal amount must be greater than zero.' AS StatusMessage;
+
+        RETURN;
+
+    END;
+
+    ------------------------------------------------------------
+    -- Validate Transaction Mode
+    ------------------------------------------------------------
+
+    IF @TransactionMode NOT IN
     (
-        SELECT 1
-        FROM core.Accounts
-        WHERE AccountID = @AccountID
+        'Cash',
+        'Cheque',
+        'UPI',
+        'NEFT',
+        'RTGS',
+        'IMPS',
+        'ATM'
     )
     BEGIN
-        THROW 50002, 'Account does not exist.', 1;
-    END
 
-    IF EXISTS
-    (
-        SELECT 1
-        FROM core.Accounts
-        WHERE AccountID = @AccountID
-          AND AccountStatus <> 'Active'
-    )
-    BEGIN
-        THROW 50003, 'Account is not active.', 1;
-    END
+        SELECT
 
-    -------------------------------------------------------------
-    -- Get Current Balance
-    -------------------------------------------------------------
+            NULL AS TransactionNumber,
+            NULL AS CurrentBalance,
+            3004 AS StatusCode,
+            'Invalid Transaction Mode.' AS StatusMessage;
+
+        RETURN;
+
+    END;
+
+    ------------------------------------------------------------
+    -- Read & Lock Account
+    ------------------------------------------------------------
 
     SELECT
         @CurrentBalance = Balance
     FROM core.Accounts
-    WHERE AccountID = @AccountID;
+    WITH (UPDLOCK, HOLDLOCK)
+    WHERE AccountID = @AccountID
+      AND AccountStatus = 'Active'
+      AND IsActive = 1;
+
+    IF @CurrentBalance IS NULL
+    BEGIN
+
+        SELECT
+
+            NULL AS TransactionNumber,
+            NULL AS CurrentBalance,
+            3002 AS StatusCode,
+            'Account not found or inactive.' AS StatusMessage;
+
+        RETURN;
+
+    END;
+
+    ------------------------------------------------------------
+    -- Validate Balance
+    ------------------------------------------------------------
 
     IF @CurrentBalance < @Amount
     BEGIN
-        THROW 50004, 'Insufficient balance.', 1;
-    END
+
+        SELECT
+
+            NULL AS TransactionNumber,
+            @CurrentBalance AS CurrentBalance,
+            3003 AS StatusCode,
+            'Insufficient balance.' AS StatusMessage;
+
+        RETURN;
+
+    END;
+
+    ------------------------------------------------------------
+    -- Calculate Balance
+    ------------------------------------------------------------
 
     SET @NewBalance = @CurrentBalance - @Amount;
 
-    -------------------------------------------------------------
+    ------------------------------------------------------------
     -- Generate Transaction Number
-    -------------------------------------------------------------
+    ------------------------------------------------------------
 
     SET @TransactionNumber =
-        CONCAT
+          'TXN-'
+        + FORMAT(GETDATE(),'yyyy')
+        + '-'
+        + RIGHT
         (
-            'TXN-',
-            YEAR(GETDATE()),
-            '-',
-            RIGHT
+            '000000000'
+            + CAST
             (
-                '0000000000'
-                +
-                CAST
-                (
-                    NEXT VALUE FOR transactions.seq_TransactionNumber
-                    AS VARCHAR(10)
-                ),
-                10
-            )
+                NEXT VALUE FOR transactions.seq_TransactionNumber
+                AS VARCHAR(9)
+            ),
+            9
         );
 
-    -------------------------------------------------------------
-    -- Transaction
-    -------------------------------------------------------------
+    ------------------------------------------------------------
+    -- Update Account
+    ------------------------------------------------------------
 
-    BEGIN TRY
+    UPDATE core.Accounts
+    SET
+          Balance = @NewBalance
+        , AvailableBalance = @NewBalance
+        , ModifiedDate = SYSDATETIME()
+    WHERE AccountID = @AccountID;
 
-        BEGIN TRANSACTION;
+    ------------------------------------------------------------
+    -- Insert Transaction
+    ------------------------------------------------------------
 
-        ---------------------------------------------------------
-        -- Update Account
-        ---------------------------------------------------------
+    INSERT INTO transactions.Transactions
+    (
+          TransactionNumber
+        , AccountID
+        , ProcessedByEmployeeID
+        , TransactionType
+        , TransactionMode
+        , Amount
+        , BalanceAfterTransaction
+        , TransactionStatus
+        , Remarks
+    )
+    VALUES
+    (
+          @TransactionNumber
+        , @AccountID
+        , @ProcessedByEmployeeID
+        , 'Withdrawal'
+        , @TransactionMode
+        , @Amount
+        , @NewBalance
+        , 'Success'
+        , @Remarks
+    );
 
-        UPDATE core.Accounts
-        SET
-              Balance = @NewBalance
-            , AvailableBalance = @NewBalance
-            , ModifiedDate = SYSDATETIME()
-        WHERE AccountID = @AccountID;
+    COMMIT TRANSACTION;
 
-        ---------------------------------------------------------
-        -- Insert Transaction
-        ---------------------------------------------------------
+    ------------------------------------------------------------
+    -- Success
+    ------------------------------------------------------------
 
-        INSERT INTO transactions.Transactions
-        (
-              TransactionNumber
-            , AccountID
-            , TransactionType
-            , TransactionMode
-            , Amount
-            , BalanceAfterTransaction
-            , TransactionStatus
-            , TransactionDate
-            , Remarks
-        )
-        VALUES
-        (
-              @TransactionNumber
-            , @AccountID
-            , 'Withdrawal'
-            , @TransactionMode
-            , @Amount
-            , @NewBalance
-            , 'Success'
-            , SYSDATETIME()
-            , @Remarks
-        );
+    SELECT
 
-        COMMIT TRANSACTION;
+          @TransactionNumber AS TransactionNumber
+        , @NewBalance AS CurrentBalance
+        , 0 AS StatusCode
+        , 'Withdrawal completed successfully.' AS StatusMessage;
 
-        ---------------------------------------------------------
-        -- Return Result
-        ---------------------------------------------------------
+END TRY
 
-        SELECT
-              @TransactionNumber AS TransactionNumber
-            , @NewBalance AS CurrentBalance
-            , 'Withdrawal completed successfully.' AS Message;
+BEGIN CATCH
 
-    END TRY
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
 
-    BEGIN CATCH
+    SELECT
 
-        IF @@TRANCOUNT > 0
-            ROLLBACK TRANSACTION;
+          NULL AS TransactionNumber
+        , NULL AS CurrentBalance
+        , 9999 AS StatusCode
+        , CONCAT
+          (
+                'SQL Error '
+              , ERROR_NUMBER()
+              , ': '
+              , ERROR_MESSAGE()
+          ) AS StatusMessage;
 
-        THROW;
-
-    END CATCH
+END CATCH
 
 END;
 GO

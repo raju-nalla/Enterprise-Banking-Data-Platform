@@ -1,224 +1,371 @@
-/*
-===============================================================================
-Procedure Name : dbo.usp_TransferFunds
-Author         : Raju Nalla
-Description    : Transfers funds between two customer accounts.
-                 Performs debit, credit, transaction logging and rollback
-                 on failure.
+USE [EnterpriseBankingDB]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+/******************************************************************************
+Project      : Enterprise Banking Data Platform
+Module       : Transaction Management
+Object Type  : Stored Procedure
+Object Name  : dbo.usp_TransferFunds
+
+Author        : Raju Nalla
+Created On    : 11-Aug-2026
+Version       : 2.0
+
+Description:
+Transfers funds from one account to another and records both
+Debit and Credit transactions.
 
 Business Rules
---------------
-1. Source account must exist.
-2. Destination account must exist.
-3. Accounts cannot be the same.
-4. Amount must be greater than zero.
-5. Both accounts must be Active.
-6. Source account must have sufficient balance.
-7. Entire transfer executes within one SQL transaction.
 
-===============================================================================
-*/
+1. Source Account must exist.
+2. Destination Account must exist.
+3. Source and Destination Accounts cannot be the same.
+4. Transfer Amount must be greater than zero.
+5. Transaction Mode must be valid.
+6. Both Accounts must be Active.
+7. Source Account must have sufficient balance.
+8. Debit Source Account.
+9. Credit Destination Account.
+10. Insert Debit Transaction.
+11. Insert Credit Transaction.
+12. Commit or Rollback as one transaction.
+
+Return Codes
+
+0       Success
+4001    Invalid Transfer Amount
+4002    Source and Destination Accounts cannot be same
+4003    Source Account not found or inactive
+4004    Destination Account not found or inactive
+4005    Insufficient Balance
+4006    Invalid Transaction Mode
+9999    Unexpected SQL Error
+******************************************************************************/
 
 CREATE OR ALTER PROCEDURE dbo.usp_TransferFunds
 (
-      @FromAccountID     INT
-    , @ToAccountID       INT
-    , @Amount            DECIMAL(18,2)
-    , @TransactionMode   VARCHAR(20)
-    , @Remarks           VARCHAR(255) = NULL
+      @FromAccountID          INT
+    , @ToAccountID            INT
+    , @Amount                 DECIMAL(18,2)
+    , @TransactionMode        VARCHAR(20)
+    , @ProcessedByEmployeeID  INT = NULL
+    , @Remarks                VARCHAR(255) = NULL
 )
 AS
 BEGIN
 
-    SET NOCOUNT ON;
-    SET XACT_ABORT ON;
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
 
-    DECLARE
-          @FromBalance DECIMAL(18,2)
-        , @ToBalance DECIMAL(18,2)
-        , @DebitTxnNo VARCHAR(30)
-        , @CreditTxnNo VARCHAR(30);
+DECLARE
+      @FromBalance        DECIMAL(18,2)
+    , @ToBalance          DECIMAL(18,2)
+    , @DebitTxnNo         VARCHAR(30)
+    , @CreditTxnNo        VARCHAR(30);
 
-    BEGIN TRY
+BEGIN TRY
 
-        ---------------------------------------------------------
-        -- Validations
-        ---------------------------------------------------------
+    BEGIN TRANSACTION;
 
-        IF @Amount <= 0
-            THROW 50001, 'Transfer amount must be greater than zero.',1;
+    ------------------------------------------------------------
+    -- Validate Amount
+    ------------------------------------------------------------
 
-        IF @FromAccountID = @ToAccountID
-            THROW 50002,'Source and destination accounts cannot be same.',1;
-
-        ---------------------------------------------------------
-        -- Begin Transaction
-        ---------------------------------------------------------
-
-        BEGIN TRANSACTION;
-
-        ---------------------------------------------------------
-        -- Read Source Account
-        ---------------------------------------------------------
+    IF @Amount <= 0
+    BEGIN
 
         SELECT
-            @FromBalance = Balance
-        FROM core.Accounts WITH (UPDLOCK,HOLDLOCK)
-        WHERE AccountID = @FromAccountID
-        AND AccountStatus='Active';
 
-        IF @FromBalance IS NULL
-            THROW 50003,'Source account not found or inactive.',1;
+            NULL AS DebitTransactionNumber,
+            NULL AS CreditTransactionNumber,
+            4001 AS StatusCode,
+            'Transfer amount must be greater than zero.' AS StatusMessage;
 
-        ---------------------------------------------------------
-        -- Read Destination Account
-        ---------------------------------------------------------
+        RETURN;
+
+    END;
+
+    ------------------------------------------------------------
+    -- Validate Same Account
+    ------------------------------------------------------------
+
+    IF @FromAccountID = @ToAccountID
+    BEGIN
 
         SELECT
-            @ToBalance = Balance
-        FROM core.Accounts WITH (UPDLOCK,HOLDLOCK)
-        WHERE AccountID=@ToAccountID
-        AND AccountStatus='Active';
 
-        IF @ToBalance IS NULL
-            THROW 50004,'Destination account not found or inactive.',1;
+            NULL AS DebitTransactionNumber,
+            NULL AS CreditTransactionNumber,
+            4002 AS StatusCode,
+            'Source and Destination Accounts cannot be the same.' AS StatusMessage;
 
-        ---------------------------------------------------------
-        -- Balance Validation
-        ---------------------------------------------------------
+        RETURN;
 
-        IF @FromBalance < @Amount
-            THROW 50005,'Insufficient balance.',1;
+    END;
 
-        ---------------------------------------------------------
-        -- Debit Source Account
-        ---------------------------------------------------------
+    ------------------------------------------------------------
+    -- Validate Transaction Mode
+    ------------------------------------------------------------
 
-        UPDATE core.Accounts
-        SET
-              Balance = Balance - @Amount
-            , AvailableBalance = AvailableBalance - @Amount
-            , ModifiedDate = SYSDATETIME()
-        WHERE AccountID=@FromAccountID;
+    IF @TransactionMode NOT IN
+    (
+        'Cash',
+        'Cheque',
+        'UPI',
+        'NEFT',
+        'RTGS',
+        'IMPS',
+        'ATM'
+    )
+    BEGIN
 
-        SET @FromBalance = @FromBalance - @Amount;
+        SELECT
 
-        ---------------------------------------------------------
-        -- Credit Destination Account
-        ---------------------------------------------------------
+            NULL AS DebitTransactionNumber,
+            NULL AS CreditTransactionNumber,
+            4006 AS StatusCode,
+            'Invalid Transaction Mode.' AS StatusMessage;
 
-        UPDATE core.Accounts
-        SET
-              Balance = Balance + @Amount
-            , AvailableBalance = AvailableBalance + @Amount
-            , ModifiedDate = SYSDATETIME()
-        WHERE AccountID=@ToAccountID;
+        RETURN;
 
-        SET @ToBalance = @ToBalance + @Amount;
+    END;
 
-        ---------------------------------------------------------
-        -- Debit Transaction Number
-        ---------------------------------------------------------
+    ------------------------------------------------------------
+    -- Read & Lock Source Account
+    ------------------------------------------------------------
 
-        SET @DebitTxnNo =
-            CONCAT(
-                'TXN-',
-                YEAR(GETDATE()),
-                '-',
-                RIGHT('0000000000'
-                + CAST(NEXT VALUE FOR transactions.seq_TransactionNumber AS VARCHAR(10)),10)
-            );
+    SELECT
+        @FromBalance = Balance
+    FROM core.Accounts
+    WITH (UPDLOCK, HOLDLOCK)
+    WHERE AccountID = @FromAccountID
+      AND AccountStatus = 'Active'
+      AND IsActive = 1;
 
-        ---------------------------------------------------------
-        -- Credit Transaction Number
-        ---------------------------------------------------------
+    IF @FromBalance IS NULL
+    BEGIN
 
-        SET @CreditTxnNo =
-            CONCAT(
-                'TXN-',
-                YEAR(GETDATE()),
-                '-',
-                RIGHT('0000000000'
-                + CAST(NEXT VALUE FOR transactions.seq_TransactionNumber AS VARCHAR(10)),10)
-            );
+        SELECT
 
-        ---------------------------------------------------------
-        -- Insert Debit Transaction
-        ---------------------------------------------------------
+            NULL AS DebitTransactionNumber,
+            NULL AS CreditTransactionNumber,
+            4003 AS StatusCode,
+            'Source Account not found or inactive.' AS StatusMessage;
 
-        INSERT INTO transactions.Transactions
+        RETURN;
+
+    END;
+
+    ------------------------------------------------------------
+    -- Read & Lock Destination Account
+    ------------------------------------------------------------
+
+    SELECT
+        @ToBalance = Balance
+    FROM core.Accounts
+    WITH (UPDLOCK, HOLDLOCK)
+    WHERE AccountID = @ToAccountID
+      AND AccountStatus = 'Active'
+      AND IsActive = 1;
+
+    IF @ToBalance IS NULL
+    BEGIN
+
+        SELECT
+
+            NULL AS DebitTransactionNumber,
+            NULL AS CreditTransactionNumber,
+            4004 AS StatusCode,
+            'Destination Account not found or inactive.' AS StatusMessage;
+
+        RETURN;
+
+    END;
+
+    ------------------------------------------------------------
+    -- Validate Balance
+    ------------------------------------------------------------
+
+    IF @FromBalance < @Amount
+    BEGIN
+
+        SELECT
+
+            NULL AS DebitTransactionNumber,
+            NULL AS CreditTransactionNumber,
+            4005 AS StatusCode,
+            'Insufficient balance.' AS StatusMessage;
+
+        RETURN;
+
+    END;
+
+    ------------------------------------------------------------
+    -- Calculate Balances
+    ------------------------------------------------------------
+
+    SET @FromBalance = @FromBalance - @Amount;
+    SET @ToBalance   = @ToBalance + @Amount;
+
+    ------------------------------------------------------------
+    -- Update Source Account
+    ------------------------------------------------------------
+
+    UPDATE core.Accounts
+    SET
+          Balance = @FromBalance
+        , AvailableBalance = @FromBalance
+        , ModifiedDate = SYSDATETIME()
+    WHERE AccountID = @FromAccountID;
+
+    ------------------------------------------------------------
+    -- Update Destination Account
+    ------------------------------------------------------------
+
+    UPDATE core.Accounts
+    SET
+          Balance = @ToBalance
+        , AvailableBalance = @ToBalance
+        , ModifiedDate = SYSDATETIME()
+    WHERE AccountID = @ToAccountID;
+
+    ------------------------------------------------------------
+    -- Generate Debit Transaction Number
+    ------------------------------------------------------------
+
+    SET @DebitTxnNo =
+          'TXN-'
+        + FORMAT(GETDATE(),'yyyy')
+        + '-'
+        + RIGHT
         (
-              TransactionNumber
-            , AccountID
-            , TransactionType
-            , TransactionMode
-            , Amount
-            , BalanceAfterTransaction
-            , TransactionStatus
-            , Remarks
-        )
-        VALUES
-        (
-              @DebitTxnNo
-            , @FromAccountID
-            , 'Withdrawal'
-            , @TransactionMode
-            , @Amount
-            , @FromBalance
-            , 'Success'
-            , ISNULL(@Remarks,'Fund Transfer - Debit')
+            '000000000'
+            + CAST
+            (
+                NEXT VALUE FOR transactions.seq_TransactionNumber
+                AS VARCHAR(9)
+            ),
+            9
         );
 
-        ---------------------------------------------------------
-        -- Insert Credit Transaction
-        ---------------------------------------------------------
+    ------------------------------------------------------------
+    -- Generate Credit Transaction Number
+    ------------------------------------------------------------
 
-        INSERT INTO transactions.Transactions
+    SET @CreditTxnNo =
+          'TXN-'
+        + FORMAT(GETDATE(),'yyyy')
+        + '-'
+        + RIGHT
         (
-              TransactionNumber
-            , AccountID
-            , TransactionType
-            , TransactionMode
-            , Amount
-            , BalanceAfterTransaction
-            , TransactionStatus
-            , Remarks
-        )
-        VALUES
-        (
-              @CreditTxnNo
-            , @ToAccountID
-            , 'Deposit'
-            , @TransactionMode
-            , @Amount
-            , @ToBalance
-            , 'Success'
-            , ISNULL(@Remarks,'Fund Transfer - Credit')
+            '000000000'
+            + CAST
+            (
+                NEXT VALUE FOR transactions.seq_TransactionNumber
+                AS VARCHAR(9)
+            ),
+            9
         );
 
-        ---------------------------------------------------------
-        -- Commit
-        ---------------------------------------------------------
+    ------------------------------------------------------------
+    -- Insert Debit Transaction
+    ------------------------------------------------------------
 
-        COMMIT TRANSACTION;
+    INSERT INTO transactions.Transactions
+    (
+          TransactionNumber
+        , AccountID
+        , ProcessedByEmployeeID
+        , TransactionType
+        , TransactionMode
+        , Amount
+        , BalanceAfterTransaction
+        , TransactionStatus
+        , Remarks
+    )
+    VALUES
+    (
+          @DebitTxnNo
+        , @FromAccountID
+        , @ProcessedByEmployeeID
+        , 'Withdrawal'
+        , @TransactionMode
+        , @Amount
+        , @FromBalance
+        , 'Success'
+        , ISNULL(@Remarks,'Fund Transfer - Debit')
+    );
 
-        SELECT
-              @DebitTxnNo AS DebitTransactionNumber
-            , @CreditTxnNo AS CreditTransactionNumber
-            , @FromBalance AS SenderBalance
-            , @ToBalance AS ReceiverBalance
-            , 'Fund transfer completed successfully.' AS Message;
+    ------------------------------------------------------------
+    -- Insert Credit Transaction
+    ------------------------------------------------------------
 
-    END TRY
+    INSERT INTO transactions.Transactions
+    (
+          TransactionNumber
+        , AccountID
+        , ProcessedByEmployeeID
+        , TransactionType
+        , TransactionMode
+        , Amount
+        , BalanceAfterTransaction
+        , TransactionStatus
+        , Remarks
+    )
+    VALUES
+    (
+          @CreditTxnNo
+        , @ToAccountID
+        , @ProcessedByEmployeeID
+        , 'Deposit'
+        , @TransactionMode
+        , @Amount
+        , @ToBalance
+        , 'Success'
+        , ISNULL(@Remarks,'Fund Transfer - Credit')
+    );
 
-    BEGIN CATCH
+    COMMIT TRANSACTION;
 
-        IF @@TRANCOUNT > 0
-            ROLLBACK TRANSACTION;
+    ------------------------------------------------------------
+    -- Success
+    ------------------------------------------------------------
 
-        THROW;
+    SELECT
 
-    END CATCH
+          @DebitTxnNo AS DebitTransactionNumber
+        , @CreditTxnNo AS CreditTransactionNumber
+        , @FromBalance AS SenderBalance
+        , @ToBalance AS ReceiverBalance
+        , 0 AS StatusCode
+        , 'Fund transfer completed successfully.' AS StatusMessage;
+
+END TRY
+
+BEGIN CATCH
+
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    SELECT
+
+          NULL AS DebitTransactionNumber
+        , NULL AS CreditTransactionNumber
+        , 9999 AS StatusCode
+        , CONCAT
+          (
+                'SQL Error '
+              , ERROR_NUMBER()
+              , ': '
+              , ERROR_MESSAGE()
+          ) AS StatusMessage;
+
+END CATCH
 
 END;
 GO
