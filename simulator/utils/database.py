@@ -50,7 +50,10 @@ class DatabaseManager:
                 f"Trusted_Connection={DB_CONFIG['trusted_connection']};"
             )
 
-            self.connection = pyodbc.connect(connection_string)
+            self.connection = pyodbc.connect(
+                connection_string,
+                autocommit=True
+            )
             self.cursor = self.connection.cursor()
 
             self.logger.info("Database connected successfully.")
@@ -143,31 +146,40 @@ class DatabaseManager:
     # Execute Stored Procedure
     # -------------------------------------------------------
 
+    # -------------------------------------------------------
+    # Execute Stored Procedure
+    # -------------------------------------------------------
+
     def execute_procedure(self, procedure_name, params=None):
         """
         Execute SQL Server Stored Procedure.
 
-        Returns:
-            list
+        Returns
+        -------
+        List of Result Sets
 
-            Example:
-
-            results[0] -> First Result Set
-            results[1] -> Second Result Set
-            results[2] -> Third Result Set
+        Example
+        -------
+        results[0] -> First SELECT
+        results[1] -> Second SELECT
         """
 
         self._ensure_connection()
 
         self.logger.info(
-            f"Executing Stored Procedure : {procedure_name}"
+            "Executing Stored Procedure : %s",
+            procedure_name
         )
 
         try:
 
+            # --------------------------------------------
+            # Execute Procedure
+            # --------------------------------------------
+
             if params:
 
-                placeholders = ",".join(["?"] * len(params))
+                placeholders = ",".join("?" for _ in params)
 
                 sql = f"EXEC {procedure_name} {placeholders}"
 
@@ -179,43 +191,38 @@ class DatabaseManager:
                     f"EXEC {procedure_name}"
                 )
 
+            # --------------------------------------------
+            # Read all Result Sets
+            # --------------------------------------------
+
             results = []
 
             while True:
 
-                try:
+                if self.cursor.description:
 
                     rows = self.cursor.fetchall()
 
-                    if rows:
-                        results.append(rows)                                        
-
-                except pyodbc.ProgrammingError:
-                    pass
+                    results.append(rows)
 
                 if not self.cursor.nextset():
                     break
 
-            self.connection.commit()
-
             self.logger.info(
-                "Executing Stored Procedure : %s | Params : %s",
-                procedure_name,
-                params
+                "Stored Procedure executed successfully."
             )
+
             return results
 
-        except Exception as ex:
-
-            if self.connection:
-                self.connection.rollback()
+        except Exception:
 
             self.logger.exception(
-                f"Stored Procedure failed : {procedure_name}"
+                "Stored Procedure failed : %s",
+                procedure_name
             )
 
             raise
-
+        
     # -------------------------------------------------------
     # Commit
     # -------------------------------------------------------

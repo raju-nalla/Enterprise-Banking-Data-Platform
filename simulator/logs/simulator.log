@@ -85,3 +85,77 @@ pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL S
 2026-08-11 14:34:41,191 | INFO | Executing Stored Procedure : dbo.usp_GetAccountByAccountNumber
 2026-08-11 14:34:41,242 | INFO | Executing Stored Procedure : dbo.usp_GetAccountByAccountNumber | Params : ('CA-HYD-2026-000011',)
 2026-08-11 14:34:41,242 | INFO | Database connection closed.
+2026-08-11 19:27:44,597 | INFO | Database connected successfully.
+2026-08-11 19:27:44,598 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-11 19:27:44,834 | ERROR | Stored Procedure failed : dbo.usp_Deposit
+Traceback (most recent call last):
+  File "C:\Users\RAJU\Documents\Enterprise-Banking-Data-Platform\simulator\utils\database.py", line 196, in execute_procedure
+    if not self.cursor.nextset():
+           ^^^^^^^^^^^^^^^^^^^^^
+pyodbc.ProgrammingError: ('25000', '[25000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 1, current count = 0. (266) (SQLMoreResults)')
+2026-08-11 19:27:44,842 | INFO | Database connection closed.
+2026-08-11 19:32:46,777 | INFO | Database connected successfully.
+2026-08-11 19:32:46,777 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-11 19:32:46,869 | ERROR | Stored Procedure failed : dbo.usp_Deposit
+Traceback (most recent call last):
+  File "C:\Users\RAJU\Documents\Enterprise-Banking-Data-Platform\simulator\utils\database.py", line 205, in execute_procedure
+    if not self.cursor.nextset():
+           ^^^^^^^^^^^^^^^^^^^^^
+pyodbc.ProgrammingError: ('25000', '[25000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 1, current count = 0. (266) (SQLMoreResults)')
+2026-08-11 19:32:46,869 | INFO | Database connection closed.
+2026-08-11 19:39:20,301 | INFO | Database connected successfully.
+2026-08-11 19:39:20,302 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-11 19:39:20,394 | INFO | Stored Procedure executed successfully.
+2026-08-11 19:39:20,394 | INFO | Database connection closed.
+2026-08-11 19:39:20,396 | INFO | Database connected successfully.
+2026-08-11 19:39:20,396 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-11 19:39:20,406 | ERROR | Stored Procedure failed : dbo.usp_Withdraw
+Traceback (most recent call last):
+  File "C:\Users\RAJU\Documents\Enterprise-Banking-Data-Platform\simulator\utils\database.py", line 186, in execute_procedure
+    self.cursor.execute(sql, params)
+pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Error converting data type nvarchar to int. (8114) (SQLExecDirectW)')
+2026-08-11 19:39:20,410 | INFO | Database connection closed.
+2026-08-11 19:44:06,954 | INFO | Database connected successfully.
+2026-08-11 19:44:06,954 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-11 19:44:07,124 | INFO | Stored Procedure executed successfully.
+2026-08-11 19:44:07,124 | INFO | Database connection closed.
+2026-08-11 19:44:07,124 | INFO | Database connected successfully.
+2026-08-11 19:44:07,124 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-11 19:44:07,135 | ERROR | Stored Procedure failed : dbo.usp_Withdraw
+Traceback (most recent call last):
+  File "C:\Users\RAJU\Documents\Enterprise-Banking-Data-Platform\simulator\utils\database.py", line 186, in execute_procedure
+    self.cursor.execute(sql, params)
+pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Error converting data type nvarchar to int. (8114) (SQLExecDirectW)')
+2026-08-11 19:44:07,142 | INFO | Database connection closed.
+2026-08-11 19:49:27,271 | INFO | Database connected successfully.
+2026-08-11 19:49:27,271 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-11 19:49:27,461 | INFO | Stored Procedure executed successfully.
+2026-08-11 19:49:27,461 | INFO | Database connection closed.
+2026-08-11 19:49:27,461 | INFO | Database connected successfully.
+2026-08-11 19:49:27,461 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-11 19:49:28,311 | INFO | Stored Procedure executed successfully.
+2026-08-11 19:49:28,311 | INFO | Database connection closed.
+2026-08-11 19:49:28,313 | INFO | Database connected successfully.
+2026-08-11 19:49:28,313 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-11 19:49:28,330 | ERROR | Stored Procedure failed : dbo.usp_TransferFunds
+Traceback (most recent call last):
+  File "C:\Users\RAJU\Documents\Enterprise-Banking-Data-Platform\simulator\utils\database.py", line 186, in execute_procedure
+    self.cursor.execute(sql, params)
+pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Error converting data type nvarchar to int. (8114) (SQLExecDirectW)')
+2026-08-11 19:49:28,341 | INFO | Database connection closed.
+2026-08-11 20:00:14,370 | INFO | Database connected successfully.
+2026-08-11 20:00:14,370 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-11 20:00:14,560 | INFO | Stored Procedure executed successfully.
+2026-08-11 20:00:14,560 | INFO | Database connection closed.
+2026-08-11 20:00:14,563 | INFO | Database connected successfully.
+2026-08-11 20:00:14,563 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-11 20:00:14,914 | INFO | Stored Procedure executed successfully.
+2026-08-11 20:00:14,919 | INFO | Database connection closed.
+2026-08-11 20:00:14,919 | INFO | Database connected successfully.
+2026-08-11 20:00:14,919 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-11 20:00:14,994 | INFO | Stored Procedure executed successfully.
+2026-08-11 20:00:14,994 | INFO | Database connection closed.
+2026-08-11 20:00:14,994 | INFO | Database connected successfully.
+2026-08-11 20:00:14,994 | INFO | Executing Stored Procedure : dbo.usp_GetAccountStatement
+2026-08-11 20:00:15,072 | INFO | Stored Procedure executed successfully.
+2026-08-11 20:00:15,072 | INFO | Database connection closed.
