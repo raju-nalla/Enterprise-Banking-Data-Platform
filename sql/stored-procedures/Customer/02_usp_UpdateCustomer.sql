@@ -31,7 +31,7 @@ Return Codes:
 
 ******************************************************************************/
 
-CREATE OR ALTER PROCEDURE dbo.usp_UpdateCustomer
+CREATE OR ALTER   PROCEDURE [dbo].[usp_UpdateCustomer]
 
       @CustomerID        INT,
 
@@ -48,10 +48,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_UpdateCustomer
       @City              VARCHAR(50) = NULL,
       @State             VARCHAR(50) = NULL,
       @Country           VARCHAR(50) = NULL,
-      @PostalCode        VARCHAR(15) = NULL,
-
-      @StatusCode        INT OUTPUT,
-      @StatusMessage     VARCHAR(200) OUTPUT
+      @PostalCode        VARCHAR(15) = NULL
 
 AS
 BEGIN
@@ -63,8 +60,8 @@ BEGIN
     -- Initialize Output Parameters
     --------------------------------------------------------------------------
 
-    SET @StatusCode = -1;
-    SET @StatusMessage = '';
+    DECLARE @StatusCode INT = -1;
+    DECLARE @StatusMessage VARCHAR(200) = '';
 
     --------------------------------------------------------------------------
     -- Normalize Input Parameters
@@ -95,6 +92,11 @@ BEGIN
         SET @StatusCode = 1004;
         SET @StatusMessage = 'First Name and Last Name are mandatory.';
 
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
         RETURN;
 
     END
@@ -113,6 +115,11 @@ BEGIN
 
         SET @StatusCode = 1006;
         SET @StatusMessage = 'Customer not found.';
+
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
         RETURN;
 
@@ -134,6 +141,11 @@ BEGIN
         SET @StatusCode = 1007;
         SET @StatusMessage = 'Cannot update an inactive customer.';
 
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
         RETURN;
 
     END
@@ -149,6 +161,11 @@ BEGIN
         SET @StatusCode = 1005;
         SET @StatusMessage = 'Invalid Gender. Allowed values are M, F or O.';
 
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
         RETURN;
 
     END
@@ -158,11 +175,16 @@ BEGIN
     --------------------------------------------------------------------------
 
     IF @DateOfBirth IS NOT NULL
-       AND @DateOfBirth > CAST(GETDATE() AS DATE)
+       AND @DateOfBirth > CAST(SYSDATETIME() AS DATE)
     BEGIN
 
         SET @StatusCode = 1003;
         SET @StatusMessage = 'Date of Birth cannot be a future date.';
+
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
         RETURN;
 
@@ -186,6 +208,11 @@ BEGIN
 
             SET @StatusCode = 1002;
             SET @StatusMessage = 'Email already exists.';
+
+            SELECT
+                @CustomerID AS CustomerID,
+                @StatusCode AS StatusCode,
+                @StatusMessage AS StatusMessage;
 
             RETURN;
 
@@ -223,7 +250,7 @@ BEGIN
             Country        = @Country,
             PostalCode     = @PostalCode,
 
-            ModifiedDate   = GETDATE()
+            ModifiedDate = SYSDATETIME()
 
         WHERE CustomerID = @CustomerID;
 
@@ -236,6 +263,13 @@ BEGIN
 
         COMMIT TRANSACTION;
 
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
+        RETURN;
+
     END TRY
 
     BEGIN CATCH
@@ -244,9 +278,21 @@ BEGIN
             ROLLBACK TRANSACTION;
 
         SET @StatusCode = 9999;
-        SET @StatusMessage = ERROR_MESSAGE();
+
+        SET @StatusMessage =
+            CONCAT
+            (
+                'SQL Error ',
+                ERROR_NUMBER(),
+                ': ',
+                ERROR_MESSAGE()
+            );
+
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
     END CATCH
 
 END;
-GO

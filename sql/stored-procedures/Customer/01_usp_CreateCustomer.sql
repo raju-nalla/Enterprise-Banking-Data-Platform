@@ -1,39 +1,29 @@
-/******************************************************************************
-Project      : Enterprise Banking Data Platform
-Module       : Customer Management
-Object Type  : Stored Procedure
-Object Name  : dbo.usp_CreateCustomer
+/*
+=============================================================
+Procedure Name : dbo.usp_CreateCustomer
 
-Author       : Raju Nalla
-Created On   : 08-Aug-2026
-Version      : 4.0
+Purpose:
+Creates a new banking customer after validating
+mandatory fields and business rules.
 
-Description
------------
-Creates a new customer after validating business rules.
+Author:
+Raju Nalla
 
-Business Rules
---------------
-1. Customer Number must be unique.
-2. Email must be unique (if provided).
-3. Date of Birth cannot be a future date.
-4. Customer is created with:
-   - KYCStatus = 'Pending'
-   - CustomerStatus = 'Active'
-   - IsActive = 1
+Project:
+Enterprise Banking Data Platform
 
-Dependencies
-------------
-core.Customers
+Sprint:
+4.4
 
-Returns
--------
-@CustomerID
-@StatusCode
-@StatusMessage
-******************************************************************************/
+Change History
 
-CREATE OR ALTER PROCEDURE dbo.usp_CreateCustomer
+10-Aug-2026
+- Refactored to enterprise response format.
+- Removed OUTPUT parameters.
+- Added standard SELECT response.
+=============================================================
+*/
+CREATE OR ALTER   PROCEDURE [dbo].[usp_CreateCustomer]
 
     @CustomerNumber      VARCHAR(20),
     @FirstName           VARCHAR(50),
@@ -47,11 +37,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_CreateCustomer
     @City                VARCHAR(50) = NULL,
     @State               VARCHAR(50) = NULL,
     @Country             VARCHAR(50) = NULL,
-    @PostalCode          VARCHAR(15) = NULL,
-
-    @CustomerID          BIGINT OUTPUT,
-    @StatusCode          INT OUTPUT,
-    @StatusMessage       VARCHAR(200) OUTPUT
+    @PostalCode          VARCHAR(15) = NULL
 
 AS
 BEGIN
@@ -59,12 +45,12 @@ BEGIN
     SET NOCOUNT ON;
 
     ------------------------------------------------------------
-    -- Initialize Output Parameters
+    -- Local Variables
     ------------------------------------------------------------
 
-    SET @CustomerID = NULL;
-    SET @StatusCode = -1;
-    SET @StatusMessage = '';
+    DECLARE @CustomerID BIGINT = NULL;
+    DECLARE @StatusCode INT = -1;
+    DECLARE @StatusMessage VARCHAR(200) = '';
 
     ------------------------------------------------------------
     -- Normalize Input Parameters
@@ -95,7 +81,12 @@ BEGIN
         SET @StatusCode = 1004;
         SET @StatusMessage = 'Customer Number, First Name and Last Name are mandatory.';
 
-        RETURN;
+    SELECT
+        @CustomerID    AS CustomerID,
+        @StatusCode    AS StatusCode,
+        @StatusMessage AS StatusMessage;
+
+    RETURN;
 
     END;
 
@@ -109,6 +100,11 @@ BEGIN
 
         SET @StatusCode = 1005;
         SET @StatusMessage = 'Invalid Gender. Allowed values are M, F or O.';
+
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
         RETURN;
 
@@ -124,6 +120,11 @@ BEGIN
 
         SET @StatusCode = 1003;
         SET @StatusMessage = 'Date of Birth cannot be a future date.';
+
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
         RETURN;
 
@@ -143,6 +144,11 @@ BEGIN
 
         SET @StatusCode = 1001;
         SET @StatusMessage = 'Customer Number already exists.';
+
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
         RETURN;
 
@@ -166,7 +172,12 @@ BEGIN
             SET @StatusCode = 1002;
             SET @StatusMessage = 'Email already exists.';
 
-            RETURN;
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
+        RETURN;
 
         END;
 
@@ -227,7 +238,7 @@ BEGIN
         -- Capture Generated Customer ID
         ------------------------------------------------------------
 
-        SET @CustomerID = CAST(SCOPE_IDENTITY() AS BIGINT);
+        SET @CustomerID = CONVERT(BIGINT, SCOPE_IDENTITY());
 
         ------------------------------------------------------------
         -- Success Response
@@ -241,6 +252,11 @@ BEGIN
         ------------------------------------------------------------
 
         COMMIT TRANSACTION;
+
+        SELECT
+            @CustomerID    AS CustomerID,
+            @StatusCode    AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
     END TRY
 
@@ -260,8 +276,11 @@ BEGIN
                 ': ',
                 ERROR_MESSAGE()
             );
+            SELECT
+                @CustomerID    AS CustomerID,
+                @StatusCode    AS StatusCode,
+                @StatusMessage AS StatusMessage;
 
     END CATCH
 
 END;
-GO

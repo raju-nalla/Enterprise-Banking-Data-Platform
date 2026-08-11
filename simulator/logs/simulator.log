@@ -1,0 +1,87 @@
+2026-08-10 18:03:10,149 | INFO | Database Connected Successfully.
+2026-08-11 11:47:42,942 | INFO | Database connected successfully.
+2026-08-11 11:47:42,942 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 11:47:43,060 | INFO | Stored Procedure completed : dbo.usp_CreateCustomer
+2026-08-11 11:47:43,060 | INFO | Database connection closed.
+2026-08-11 11:56:49,203 | INFO | Database connected successfully.
+2026-08-11 11:56:49,203 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 11:56:49,299 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811115648', 'Ira', 'Shukla', datetime.date(1973, 6, 19), 'F', 'ira.shukla@gmail.com', '9709257115', 'H.No. 41, Soman Road, Firozabad-147150', None, 'Mau', 'Madhya Pradesh', 'India', '893894')
+2026-08-11 11:56:49,299 | INFO | Database connection closed.
+2026-08-11 12:55:54,669 | INFO | Database connected successfully.
+2026-08-11 12:55:54,670 | INFO | Database connection closed.
+2026-08-11 12:58:16,882 | INFO | Database connected successfully.
+2026-08-11 12:58:16,882 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 12:58:17,196 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811125816', 'Rushil', 'Savant', datetime.date(1985, 3, 15), 'M', 'rushil.savant@gmail.com', '6953957314', '608, Sengupta Circle\nChandrapur 112627', None, 'Shimoga', 'Madhya Pradesh', 'India', '096578')
+2026-08-11 12:58:17,208 | INFO | Database connection closed.
+2026-08-11 12:58:17,210 | INFO | Database connected successfully.
+2026-08-11 12:58:17,210 | INFO | Executing Stored Procedure : dbo.usp_GetCustomerByCustomerNumber
+2026-08-11 12:58:17,240 | INFO | Executing Stored Procedure : dbo.usp_GetCustomerByCustomerNumber | Params : ('CUST20260811125816',)
+2026-08-11 12:58:17,240 | INFO | Database connection closed.
+2026-08-11 14:24:26,403 | INFO | Database connected successfully.
+2026-08-11 14:24:26,403 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 14:24:26,610 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811142425', 'Rushil', 'Balasubramanian', datetime.date(1978, 2, 2), 'M', 'rushil.balasubramanian@gmail.com', '9773800844', 'H.No. 96\nChowdhury Path\nNanded-050129', None, 'Gulbarga', 'Maharashtra', 'India', '922169')
+2026-08-11 14:24:26,612 | INFO | Database connection closed.
+2026-08-11 14:24:26,614 | INFO | Database connected successfully.
+2026-08-11 14:24:26,614 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount
+2026-08-11 14:24:26,628 | ERROR | Stored Procedure failed : dbo.usp_CreateAccount
+Traceback (most recent call last):
+  File "C:\Users\RAJU\Documents\Enterprise-Banking-Data-Platform\simulator\utils\database.py", line 174, in execute_procedure
+    self.cursor.execute(sql, params)
+pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Error converting data type nvarchar to int. (8114) (SQLExecDirectW)')
+2026-08-11 14:24:26,629 | INFO | Database connection closed.
+2026-08-11 14:26:28,917 | INFO | Database connected successfully.
+2026-08-11 14:26:28,917 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 14:26:28,941 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811142628', 'Chakradhar', 'Pandit', datetime.date(1962, 10, 8), 'M', 'chakradhar.pandit@gmail.com', '8143783540', 'H.No. 465, Sibal Nagar, Phusro 484717', None, 'Junagadh', 'Himachal Pradesh', 'India', '109362')
+2026-08-11 14:26:28,951 | INFO | Database connection closed.
+2026-08-11 14:26:28,953 | INFO | Database connected successfully.
+2026-08-11 14:26:28,953 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount
+2026-08-11 14:26:28,957 | ERROR | Stored Procedure failed : dbo.usp_CreateAccount
+Traceback (most recent call last):
+  File "C:\Users\RAJU\Documents\Enterprise-Banking-Data-Platform\simulator\utils\database.py", line 174, in execute_procedure
+    self.cursor.execute(sql, params)
+pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Error converting data type nvarchar to int. (8114) (SQLExecDirectW)')
+2026-08-11 14:26:28,957 | INFO | Database connection closed.
+2026-08-11 14:29:34,435 | INFO | Database connected successfully.
+2026-08-11 14:29:34,435 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 14:29:34,499 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811142933', 'Neel', 'Issac', datetime.date(1961, 7, 23), 'M', 'neel.issac@gmail.com', '9159890033', 'H.No. 117, Doctor Nagar, Bhubaneswar 379468', None, 'Kochi', 'Goa', 'India', '362865')
+2026-08-11 14:29:34,503 | INFO | Database connection closed.
+2026-08-11 14:29:34,507 | INFO | Database connected successfully.
+2026-08-11 14:29:34,507 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount
+2026-08-11 14:29:34,998 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount | Params : (8, 1, 'SB', 77602.19, 'INR')
+2026-08-11 14:29:34,998 | INFO | Database connection closed.
+2026-08-11 14:31:36,190 | INFO | Database connected successfully.
+2026-08-11 14:31:36,202 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 14:31:36,266 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811143135', 'Simon', 'Sehgal', datetime.date(2005, 6, 26), 'M', 'simon.sehgal@gmail.com', '9260636351', 'H.No. 446\nSankar Circle\nJaunpur-554778', None, 'Maheshtala', 'Himachal Pradesh', 'India', '918347')
+2026-08-11 14:31:36,266 | INFO | Database connection closed.
+2026-08-11 14:31:36,266 | INFO | Database connected successfully.
+2026-08-11 14:31:36,266 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount
+2026-08-11 14:31:36,291 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount | Params : (9, 1, 'SB', 60884.26, 'INR')
+2026-08-11 14:31:36,291 | INFO | Database connection closed.
+2026-08-11 14:33:10,618 | INFO | Database connected successfully.
+2026-08-11 14:33:10,618 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 14:33:10,634 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811143310', 'Vedhika', 'Bora', datetime.date(1978, 10, 8), 'F', 'vedhika.bora@gmail.com', '9308490555', '36, Ramesh Circle, Berhampur-534349', None, 'Kulti', 'Odisha', 'India', '594568')
+2026-08-11 14:33:10,634 | INFO | Database connection closed.
+2026-08-11 14:33:10,640 | INFO | Database connected successfully.
+2026-08-11 14:33:10,640 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount
+2026-08-11 14:33:10,652 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount | Params : (10, 1, 'SB', 185441.06, 'INR')
+2026-08-11 14:33:10,652 | INFO | Database connection closed.
+2026-08-11 14:34:03,245 | INFO | Database connected successfully.
+2026-08-11 14:34:03,245 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 14:34:03,264 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811143403', 'Ronith', 'Dalal', datetime.date(1963, 12, 24), 'M', 'ronith.dalal@gmail.com', '6110786346', '06, Bajaj Zila\nBihar Sharif-450421', None, 'Tezpur', 'Haryana', 'India', '021633')
+2026-08-11 14:34:03,264 | INFO | Database connection closed.
+2026-08-11 14:34:03,267 | INFO | Database connected successfully.
+2026-08-11 14:34:03,267 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount
+2026-08-11 14:34:03,274 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount | Params : (11, 1, 'CA', 103692.33, 'INR')
+2026-08-11 14:34:03,274 | INFO | Database connection closed.
+2026-08-11 14:34:41,117 | INFO | Database connected successfully.
+2026-08-11 14:34:41,117 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer
+2026-08-11 14:34:41,150 | INFO | Executing Stored Procedure : dbo.usp_CreateCustomer | Params : ('CUST20260811143441', 'Yug', 'Chandra', datetime.date(1970, 9, 3), 'M', 'yug.chandra@gmail.com', '9388445167', '52/37, Prabhakar Road, Jaipur-287692', None, 'Uluberia', 'Gujarat', 'India', '981393')
+2026-08-11 14:34:41,150 | INFO | Database connection closed.
+2026-08-11 14:34:41,150 | INFO | Database connected successfully.
+2026-08-11 14:34:41,150 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount
+2026-08-11 14:34:41,190 | INFO | Executing Stored Procedure : dbo.usp_CreateAccount | Params : (12, 1, 'CA', 142545.3, 'INR')
+2026-08-11 14:34:41,190 | INFO | Database connection closed.
+2026-08-11 14:34:41,191 | INFO | Database connected successfully.
+2026-08-11 14:34:41,191 | INFO | Executing Stored Procedure : dbo.usp_GetAccountByAccountNumber
+2026-08-11 14:34:41,242 | INFO | Executing Stored Procedure : dbo.usp_GetAccountByAccountNumber | Params : ('CA-HYD-2026-000011',)
+2026-08-11 14:34:41,242 | INFO | Database connection closed.

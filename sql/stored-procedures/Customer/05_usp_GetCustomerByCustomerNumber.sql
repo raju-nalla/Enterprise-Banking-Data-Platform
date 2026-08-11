@@ -1,4 +1,9 @@
-USE EnterpriseBankingDB;
+USE [EnterpriseBankingDB]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_GetCustomerByCustomerNumber]    Script Date: 11-08-2026 11:22:19 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
 GO
 
 /************************************************************************************************
@@ -29,23 +34,17 @@ Return Codes
 ************************************************************************************************/
 
 CREATE OR ALTER PROCEDURE dbo.usp_GetCustomerByCustomerNumber
-
-      @CustomerNumber VARCHAR(20),
-
-      @StatusCode INT OUTPUT,
-      @StatusMessage VARCHAR(200) OUTPUT
+      @CustomerNumber VARCHAR(20)
 
 AS
 BEGIN
 
 SET NOCOUNT ON;
 
-----------------------------------------------------------
--- Initialize Output Parameters
-----------------------------------------------------------
+DECLARE @StatusCode INT = -1;
+DECLARE @StatusMessage VARCHAR(200) = '';
 
-SET @StatusCode = -1;
-SET @StatusMessage = '';
+SET @CustomerNumber = NULLIF(LTRIM(RTRIM(@CustomerNumber)), '');
 
 BEGIN TRY
 
@@ -54,16 +53,19 @@ BEGIN TRY
     ----------------------------------------------------------
 
     IF @CustomerNumber IS NULL
-       OR LTRIM(RTRIM(@CustomerNumber)) = ''
     BEGIN
 
         SET @StatusCode = 1001;
         SET @StatusMessage = 'Customer Number is required.';
 
+        SELECT
+            NULL AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
         RETURN;
 
     END;
-
     ----------------------------------------------------------
     -- Customer Exists
     ----------------------------------------------------------
@@ -78,6 +80,11 @@ BEGIN TRY
 
         SET @StatusCode = 1001;
         SET @StatusMessage = 'Customer Number not found.';
+
+        SELECT
+            NULL AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
         RETURN;
 
@@ -99,6 +106,11 @@ BEGIN TRY
         SET @StatusCode = 1008;
         SET @StatusMessage = 'Customer is inactive.';
 
+        SELECT
+            NULL AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
         RETURN;
 
     END;
@@ -106,6 +118,9 @@ BEGIN TRY
     ----------------------------------------------------------
     -- Return Customer
     ----------------------------------------------------------
+
+    SET @StatusCode = 0;
+    SET @StatusMessage = 'Customer retrieved successfully.';
 
     SELECT
 
@@ -125,16 +140,14 @@ BEGIN TRY
         PostalCode,
         KYCStatus,
         CustomerStatus,
+        IsActive,
         CreatedDate,
-        ModifiedDate
-
+        ModifiedDate,
+        0 AS StatusCode,
+        'Customer retrieved successfully.' AS StatusMessage
     FROM core.Customers
-
     WHERE CustomerNumber = @CustomerNumber
       AND IsActive = 1;
-
-    SET @StatusCode = 0;
-    SET @StatusMessage = 'Customer retrieved successfully.';
 
 END TRY
 
@@ -143,15 +156,21 @@ BEGIN CATCH
     SET @StatusCode = 9999;
 
     SET @StatusMessage =
-        CONCAT
-        (
-            'SQL Error ',
-            ERROR_NUMBER(),
-            ': ',
-            ERROR_MESSAGE()
-        );
+    CONCAT
+    (
+        'SQL Error ',
+        ERROR_NUMBER(),
+        ': ',
+        ERROR_MESSAGE()
+    );
+
+    SELECT
+        CAST(NULL AS BIGINT) AS CustomerID,
+        @StatusCode          AS StatusCode,
+        @StatusMessage       AS StatusMessage;
+
+    RETURN;
 
 END CATCH
 
 END;
-GO

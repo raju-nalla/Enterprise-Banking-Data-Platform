@@ -34,12 +34,9 @@ Return Codes
 
 ******************************************************************************/
 
-CREATE OR ALTER PROCEDURE dbo.usp_DeactivateCustomer
+CREATE OR ALTER   PROCEDURE [dbo].[usp_DeactivateCustomer]
 
-      @CustomerID        BIGINT,
-
-      @StatusCode        INT OUTPUT,
-      @StatusMessage     VARCHAR(200) OUTPUT
+      @CustomerID        BIGINT
 
 AS
 BEGIN
@@ -48,11 +45,11 @@ BEGIN
     SET XACT_ABORT ON;
 
     ------------------------------------------------------------
-    -- Initialize Output Parameters
+    -- Local Variables
     ------------------------------------------------------------
 
-    SET @StatusCode = -1;
-    SET @StatusMessage = '';
+    DECLARE @StatusCode INT = -1;
+    DECLARE @StatusMessage VARCHAR(200) = '';
 
     ------------------------------------------------------------
     -- Validate Customer Exists
@@ -68,6 +65,11 @@ BEGIN
 
         SET @StatusCode = 1006;
         SET @StatusMessage = 'Customer not found.';
+
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
         RETURN;
 
@@ -89,6 +91,11 @@ BEGIN
         SET @StatusCode = 1008;
         SET @StatusMessage = 'Customer is already inactive.';
 
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
         RETURN;
 
     END;
@@ -109,6 +116,11 @@ BEGIN
 
         SET @StatusCode = 1009;
         SET @StatusMessage = 'Customer has active accounts.';
+
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
 
         RETURN;
 
@@ -141,6 +153,12 @@ BEGIN
         SET @StatusMessage = 'Customer deactivated successfully.';
 
         COMMIT TRANSACTION;
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
+        RETURN;
 
     END TRY
 
@@ -148,8 +166,6 @@ BEGIN
 
         IF @@TRANCOUNT > 0
             ROLLBACK TRANSACTION;
-
-        SET @StatusCode = 9999;
 
         SET @StatusMessage =
             CONCAT
@@ -160,7 +176,15 @@ BEGIN
                 ERROR_MESSAGE()
             );
 
+        SELECT
+            @CustomerID AS CustomerID,
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
+        RETURN;
+
+            
+
     END CATCH
 
 END;
-GO

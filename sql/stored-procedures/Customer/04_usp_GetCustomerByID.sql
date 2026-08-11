@@ -1,4 +1,9 @@
-USE EnterpriseBankingDB;
+USE [EnterpriseBankingDB]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_GetCustomerByID]    Script Date: 10-08-2026 19:44:23 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
 GO
 
 /************************************************************************************************
@@ -28,24 +33,17 @@ Return Codes
 9999    Unexpected SQL Error
 ************************************************************************************************/
 
-CREATE OR ALTER PROCEDURE dbo.usp_GetCustomerByID
+CREATE OR ALTER PROCEDURE  [dbo].[usp_GetCustomerByID]
 
-      @CustomerID BIGINT,
-
-      @StatusCode INT OUTPUT,
-      @StatusMessage VARCHAR(200) OUTPUT
+      @CustomerID BIGINT
 
 AS
 BEGIN
 
 SET NOCOUNT ON;
 
----------------------------------------------------------
--- Initialize
----------------------------------------------------------
-
-SET @StatusCode = -1;
-SET @StatusMessage = '';
+DECLARE @StatusCode INT = -1;
+DECLARE @StatusMessage VARCHAR(200) = '';
 
 BEGIN TRY
 
@@ -61,10 +59,15 @@ BEGIN TRY
     )
     BEGIN
 
-        SET @StatusCode = 1006;
-        SET @StatusMessage = 'Customer not found.';
+    SET @StatusCode = 1006;
+    SET @StatusMessage = 'Customer not found.';
 
-        RETURN;
+    SELECT
+        @CustomerID    AS CustomerID,
+        @StatusCode    AS StatusCode,
+        @StatusMessage AS StatusMessage;
+
+    RETURN;
 
     END;
 
@@ -84,7 +87,12 @@ BEGIN TRY
         SET @StatusCode=1008;
         SET @StatusMessage='Customer is inactive.';
 
-        RETURN;
+    SELECT
+        @CustomerID    AS CustomerID,
+        @StatusCode    AS StatusCode,
+        @StatusMessage AS StatusMessage;
+
+    RETURN
 
     END;
 
@@ -93,7 +101,6 @@ BEGIN TRY
     ---------------------------------------------------------
 
     SELECT
-
         CustomerID,
         CustomerNumber,
         FirstName,
@@ -110,32 +117,38 @@ BEGIN TRY
         PostalCode,
         KYCStatus,
         CustomerStatus,
+        IsActive,
         CreatedDate,
-        ModifiedDate
+        ModifiedDate,
+
+        0 AS StatusCode,
+        'Customer retrieved successfully.' AS StatusMessage
 
     FROM core.Customers
-
-    WHERE CustomerID=@CustomerID;
-
-    SET @StatusCode=0;
-    SET @StatusMessage='Customer retrieved successfully.';
+    WHERE CustomerID = @CustomerID;
 
 END TRY
 
 BEGIN CATCH
 
-    SET @StatusCode=9999;
+    SET @StatusCode = 9999;
 
     SET @StatusMessage =
-        CONCAT
-        (
-            'SQL Error ',
-            ERROR_NUMBER(),
-            ': ',
-            ERROR_MESSAGE()
-        );
+    CONCAT
+    (
+        'SQL Error ',
+        ERROR_NUMBER(),
+        ': ',
+        ERROR_MESSAGE()
+    );
+
+    SELECT
+        @CustomerID AS CustomerID,
+        @StatusCode AS StatusCode,
+        @StatusMessage AS StatusMessage;
+
+    RETURN;
 
 END CATCH
 
 END;
-GO

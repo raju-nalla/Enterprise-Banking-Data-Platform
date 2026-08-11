@@ -1,28 +1,29 @@
 # 🏦 Enterprise Banking Data Platform
 
-A production-style Enterprise Banking Data Platform built using SQL Server, with the next phase focused on Azure Data Engineering services including Azure Data Factory, Azure Databricks, ADLS Gen2, Azure Synapse Analytics, Azure SQL Database, Azure Key Vault, and CI/CD.
+A production-style Enterprise Banking Data Platform built using SQL Server and Python, designed to simulate a real-world core banking system. The next phase extends this platform into a modern Azure Data Engineering solution using Azure Data Factory, Azure Databricks, ADLS Gen2, Azure Synapse Analytics, Azure SQL Database, Azure Key Vault, and Power BI.
 
 ---
 
 # 📌 Project Overview
 
-This project simulates a real-world banking system by implementing:
+This project demonstrates the complete lifecycle of an enterprise banking system by implementing:
 
 - Customer Management
 - Account Management
 - Loan Processing
+- Transaction Management
 - EMI Payments
 - Money Transfers
-- Transaction Management
 - Reporting & Analytics
 - Audit Logging
 - Business Triggers
+- Python Integration Simulator
 
-The Azure implementation will extend this operational database into a modern cloud data platform using the Medallion Architecture (Bronze → Silver → Gold).
+The long-term objective is to build an end-to-end Azure Data Engineering project that ingests operational banking data into a Medallion Architecture (Bronze → Silver → Gold) for enterprise reporting and analytics.
 
 ---
 
-# 🏗️ Technology Stack
+# 🏗 Technology Stack
 
 ## Database
 
@@ -30,52 +31,69 @@ The Azure implementation will extend this operational database into a modern clo
 - T-SQL
 - Stored Procedures
 - Views
+- Functions
 - Triggers
 - Sequences
 - Transactions
 - Error Handling
 
-## Azure (Next Phase)
+## Python
+
+- Python 3.x
+- pyodbc
+- Faker
+- Object-Oriented Programming
+- Service Layer Architecture
+
+## Azure (Upcoming Phase)
 
 - Azure SQL Database
 - Azure Data Factory
+- Azure Data Lake Storage Gen2
 - Azure Databricks
 - Azure Synapse Analytics
-- Azure Data Lake Storage Gen2
 - Azure Key Vault
 - Delta Lake
 - PySpark
-- GitHub
 - Azure DevOps
+- GitHub
 
 ---
 
 # 📂 Project Structure
 
-```
+```text
 Enterprise-Banking-Data-Platform
-
 │
-├── Database
+├── docs
 │
-├── 01_Schemas
-├── 02_Tables
-├── 03_Constraints
-├── 04_Sequences
-├── 05_Sample_Data
-├── 06_Stored_Procedures
-├── 07_Views
-├── 08_Triggers
-├── 09_Testing
+├── infrastructure
 │
-├── Azure
+├── monitoring
 │
-├── ADF
-├── Databricks
-├── Synapse
-├── ADLS
-├── KeyVault
-├── CI_CD
+├── powerbi
+│
+├── simulator
+│   ├── config
+│   ├── generators
+│   ├── services
+│   ├── tests
+│   ├── utils
+│   └── logs
+│
+├── sql
+│   ├── schema
+│   ├── sequences
+│   ├── stored-procedures
+│   │   ├── Customer
+│   │   ├── Account
+│   │   ├── Loan
+│   │   ├── Transactions
+│   │   └── Reporting
+│   ├── functions
+│   ├── views
+│   ├── triggers
+│   └── test
 │
 └── README.md
 ```
@@ -85,12 +103,12 @@ Enterprise-Banking-Data-Platform
 # 🗄 Database Schemas
 
 | Schema | Purpose |
-|----------|-----------------------------|
-| core | Customers, Accounts, Employees, Branches |
-| lending | Loans |
+|----------|-------------------------------|
+| core | Customers, Accounts, Branches, Employees |
+| lending | Loan Management |
 | transactions | Banking Transactions |
 | reporting | Reporting Views |
-| audit | Audit Logs |
+| audit | Audit Framework |
 
 ---
 
@@ -102,8 +120,8 @@ Enterprise-Banking-Data-Platform
 
 - Customers
 - Accounts
-- Employees
 - Branches
+- Employees
 
 ### Lending
 
@@ -121,9 +139,7 @@ Enterprise-Banking-Data-Platform
 
 # 🔢 Sequences
 
-Implemented enterprise numbering using SQL Server Sequences.
-
-Examples:
+Enterprise numbering is implemented using SQL Server Sequences.
 
 - CustomerNumber
 - AccountNumber
@@ -139,23 +155,27 @@ Examples:
 
 - ✅ usp_CreateCustomer
 - ✅ usp_UpdateCustomer
+- ✅ usp_GetCustomerByID
+- ✅ usp_GetCustomerByCustomerNumber
+- ✅ usp_GetAllCustomers
 - ✅ usp_DeactivateCustomer
-- ✅ usp_SearchCustomers
 
 ---
 
 ## Account Module
 
-- ✅ usp_OpenAccount
-- ✅ usp_DepositMoney
-- ✅ usp_WithdrawMoney
-- ✅ usp_TransferMoney
+- ✅ usp_CreateAccount
+- ✅ usp_UpdateAccountStatus
+- ✅ usp_GetAccountByAccountNumber
+- ✅ usp_GetAccountByID
+- ✅ usp_GetAllAccounts
+- ✅ usp_CloseAccount
 
 ---
 
 ## Loan Module
 
-- ✅ usp_ApplyLoan
+- ✅ usp_CreateLoan
 - ✅ usp_ApproveLoan
 - ✅ usp_RejectLoan
 - ✅ usp_PayEMI
@@ -164,12 +184,20 @@ Examples:
 
 ---
 
+## Transaction Module
+
+- ✅ usp_Deposit
+- ✅ usp_Withdraw
+- ✅ usp_TransferFunds
+- ✅ usp_GetAccountStatement
+
+---
+
 ## Reporting Module
 
-- ✅ usp_GetCustomerLoanSummary
-- ✅ usp_GetAccountStatement
-- ✅ usp_BranchDailySummary
 - ✅ usp_DashboardSummary
+- ✅ usp_BranchDailySummary
+- ✅ usp_GetCustomerLoanSummary
 
 ---
 
@@ -180,6 +208,16 @@ Examples:
 - ✅ vw_LoanPortfolio
 - ✅ vw_BranchSummary
 - ✅ vw_EmployeeHierarchy
+
+---
+
+# 🧮 Scalar Functions
+
+- ✅ fn_GetCustomerFullName
+- ✅ fn_GetAccountBalance
+- ✅ fn_GetLoanOutstanding
+- ✅ fn_CalculateAge
+- ✅ fn_CalculateEMI
 
 ---
 
@@ -195,53 +233,31 @@ Automatically captures:
 
 - Old Values
 - New Values
-- Updated By
-- Date & Time
+- Employee ID
+- Action Type
 - Remarks
+- Timestamp
 
 ---
 
 ## Business Triggers
 
-### Prevent Transaction Delete
+### Transaction Protection
 
-```
-trg_Transactions_PreventDelete
-```
-
-Prevents deletion of completed financial transactions.
-
----
-
-### Prevent Transaction Update
-
-```
-trg_Transactions_PreventUpdate
-```
-
-Prevents modification of completed transactions.
-
----
+- ✅ trg_Transactions_PreventUpdate
+- ✅ trg_Transactions_PreventDelete
 
 ### Audit Defaults
 
-```
-trg_AuditLogs_Defaults
-```
-
-Automatically populates:
-
-- ActionDate
-- CreatedDate
-- IsActive
+- ✅ trg_AuditLogs_Defaults
 
 ---
 
 # 📝 Audit Framework
 
-All business-critical changes are recorded inside:
+All business-critical changes are stored in:
 
-```
+```text
 audit.AuditLogs
 ```
 
@@ -255,103 +271,189 @@ Captured Information:
 - New Values
 - Remarks
 - Action Date
+- Created Date
+
+---
+
+# 🐍 Python Banking Simulator
+
+A lightweight simulator is included to validate SQL Server stored procedures through Python.
+
+The simulator follows a Service Layer architecture.
+
+## Customer Module
+
+### Generator
+
+- ✅ customer_generator.py
+
+### Service
+
+- ✅ customer_service.py
+
+### Integration Test
+
+- ✅ test_customer_service.py
+
+---
+
+## Account Module
+
+### Generator
+
+- ✅ account_generator.py
+
+### Service
+
+- ✅ account_service.py
+
+### Integration Test
+
+- ✅ test_account_service.py
+
+---
+
+## Loan Module
+
+⏳ Planned
+
+---
+
+## Transaction Module
+
+⏳ Planned
+
+---
+
+## Reporting Module
+
+⏳ Planned
 
 ---
 
 # 🔒 Business Rules Implemented
 
-✔ Customer validation
+✔ Customer Validation
 
-✔ Account validation
+✔ Account Validation
 
-✔ Loan eligibility
+✔ Branch Validation
 
-✔ Loan approval
+✔ Loan Eligibility
 
-✔ Loan rejection
+✔ Loan Approval
 
-✔ Loan disbursement
+✔ Loan Rejection
 
-✔ EMI payment validation
+✔ EMI Validation
 
-✔ Loan closure validation
+✔ Loan Closure
 
-✔ Insufficient balance validation
+✔ Deposit Validation
 
-✔ Prevent duplicate operations
+✔ Withdrawal Validation
+
+✔ Fund Transfer Validation
+
+✔ Insufficient Balance Validation
+
+✔ Duplicate Prevention
 
 ✔ Audit Logging
 
 ✔ Transaction Protection
 
+✔ Error Handling
+
 ---
 
 # 🧪 Testing
 
-All stored procedures and triggers were tested with:
+The following components have been tested successfully:
 
-- Successful scenarios
-- Invalid inputs
-- Business validation failures
-- Transaction rollback
-- Error handling
-- Audit verification
+- Customer CRUD
+- Account Creation
+- Account Lookup
+- Account Status Update
+- Stored Procedure Validation
+- Transaction Rollback
+- Error Handling
+- Business Rules
+- Trigger Validation
+- Audit Logging
+- Python Integration
 
 ---
 
 # 📊 Current Project Status
 
-| Module | Status |
-|----------|--------|
+| Component | Status |
+|------------|---------|
 | Database Design | ✅ Completed |
-| Schemas | ✅ Completed |
+| Database Schemas | ✅ Completed |
 | Tables | ✅ Completed |
 | Constraints | ✅ Completed |
-| Sequences | ✅ Completed |
 | Sample Data | ✅ Completed |
-| Stored Procedures | ✅ Completed |
+| Sequences | ✅ Completed |
 | Views | ✅ Completed |
+| Functions | ✅ Completed |
 | Triggers | ✅ Completed |
-| Testing | ✅ Completed |
-| Documentation | ✅ Completed |
+| Customer Stored Procedures | ✅ Completed |
+| Account Stored Procedures | ✅ Completed |
+| Loan Stored Procedures | ✅ Completed |
+| Transaction Stored Procedures | ✅ Completed |
+| Reporting Stored Procedures | ✅ Completed |
+| Customer Python Simulator | ✅ Completed |
+| Account Python Simulator | ✅ Completed |
+| Loan Python Simulator | ⏳ Planned |
+| Transaction Python Simulator | ⏳ Planned |
+| Reporting Python Simulator | ⏳ Planned |
 | Azure SQL | ⏳ Planned |
 | Azure Data Factory | ⏳ Planned |
-| Azure Databricks | ⏳ Planned |
 | ADLS Gen2 | ⏳ Planned |
-| Azure Synapse | ⏳ Planned |
-| Azure Key Vault | ⏳ Planned |
-| CI/CD | ⏳ Planned |
+| Azure Databricks | ⏳ Planned |
+| Azure Synapse Analytics | ⏳ Planned |
+| Power BI | ⏳ Planned |
 
 ---
 
-# 🚀 Next Phase
+# 🚀 Azure Data Engineering Roadmap
 
-The SQL Server operational database will be integrated with Azure services:
+```text
+                SQL Server
+                     │
+                     ▼
+          Azure Data Factory
+                     │
+                     ▼
+           ADLS Gen2 (Bronze)
+                     │
+                     ▼
+          Azure Databricks
+          Bronze → Silver → Gold
+                     │
+                     ▼
+      Azure Synapse Analytics
+                     │
+                     ▼
+             Power BI Dashboard
+```
 
-```
-Azure SQL Database
-        │
-        ▼
-Azure Data Factory
-        │
-        ▼
-ADLS Gen2 (Bronze)
-        │
-        ▼
-Azure Databricks
-        │
-        ▼
-Silver Layer
-        │
-        ▼
-Gold Layer
-        │
-        ▼
-Azure Synapse Analytics
-        │
-        ▼
-Power BI Dashboard
-```
+---
+
+# 🎯 Upcoming Work
+
+- Loan Python Simulator
+- Transaction Python Simulator
+- Reporting Python Simulator
+- Azure SQL Migration
+- Azure Data Factory Pipelines
+- ADLS Gen2 Integration
+- Azure Databricks ETL
+- Delta Lake Implementation
+- Synapse Analytics
+- Power BI Dashboards
+- CI/CD using Azure DevOps
 
 ---
 
@@ -361,18 +463,24 @@ Power BI Dashboard
 
 Azure Data Engineer
 
-GitHub:
+GitHub
+
 https://github.com/raju-nalla
 
-LinkedIn:
+LinkedIn
+
 https://www.linkedin.com/in/raju-nalla
 
 ---
 
 # ⭐ Project Status
 
-**Version:** v1.0
+**Version:** v1.5
 
-**Current Phase:** SQL Server Database Completed ✅
+**Current Phase**
 
-**Next Phase:** Azure Data Engineering Pipeline 🚀
+✅ Enterprise SQL Banking Platform with Python Integration Simulator
+
+**Next Phase**
+
+🚀 Azure Data Engineering Platform (ADF → ADLS → Databricks → Synapse → Power BI)

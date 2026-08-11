@@ -1,4 +1,9 @@
-USE EnterpriseBankingDB;
+USE [EnterpriseBankingDB]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_GetAllCustomers]    Script Date: 11-08-2026 11:34:52 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
 GO
 
 /******************************************************************************
@@ -33,26 +38,19 @@ Return Codes
 
 ******************************************************************************/
 
-CREATE OR ALTER PROCEDURE dbo.usp_GetAllCustomers
+CREATE OR ALTER PROCEDURE [dbo].[usp_GetAllCustomers]
 
-      @PageNumber      INT = 1,
-      @PageSize        INT = 20,
-      @IsActive        BIT = 1,
-
-      @StatusCode      INT OUTPUT,
-      @StatusMessage   VARCHAR(200) OUTPUT
+    @PageNumber INT = 1,
+    @PageSize   INT = 20,
+    @IsActive   BIT = 1
 
 AS
 BEGIN
 
     SET NOCOUNT ON;
 
-    ------------------------------------------------------------
-    -- Initialize
-    ------------------------------------------------------------
-
-    SET @StatusCode = -1;
-    SET @StatusMessage = '';
+    DECLARE @StatusCode INT = -1;
+    DECLARE @StatusMessage VARCHAR(200) = '';
 
     ------------------------------------------------------------
     -- Validate Page Number
@@ -60,11 +58,17 @@ BEGIN
 
     IF @PageNumber < 1
     BEGIN
+
         SET @StatusCode = 1002;
         SET @StatusMessage = 'Invalid page number.';
-        RETURN;
-    END;
 
+        SELECT
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
+        RETURN;
+
+    END;
     ------------------------------------------------------------
     -- Validate Page Size
     ------------------------------------------------------------
@@ -73,6 +77,10 @@ BEGIN
     BEGIN
         SET @StatusCode = 1003;
         SET @StatusMessage = 'Invalid page size.';
+        SELECT
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
         RETURN;
     END;
 
@@ -101,7 +109,17 @@ BEGIN
         BEGIN
             SET @StatusCode = 1001;
             SET @StatusMessage = 'No customers found.';
-            RETURN;
+        SELECT
+
+            0 AS TotalRecords,
+            @PageNumber AS PageNumber,
+            @PageSize AS PageSize,
+            0 AS TotalPages,
+
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
+
+        RETURN;
         END;
 
         ------------------------------------------------------------
@@ -140,36 +158,39 @@ BEGIN
         -- Result Set 2 : Pagination Information
         ------------------------------------------------------------
 
-        SELECT
-
-            @TotalRecords AS TotalRecords,
-            @PageNumber AS PageNumber,
-            @PageSize AS PageSize,
-            CEILING(CAST(@TotalRecords AS DECIMAL(18,2)) / @PageSize) AS TotalPages;
-
-        ------------------------------------------------------------
-        -- Success
-        ------------------------------------------------------------
-
         SET @StatusCode = 0;
         SET @StatusMessage = 'Customers retrieved successfully.';
 
+        SELECT
+
+            0 AS TotalRecords,
+            @PageNumber AS PageNumber,
+            @PageSize AS PageSize,
+            0 AS TotalPages,
+
+            @StatusCode AS StatusCode,
+            @StatusMessage AS StatusMessage;
     END TRY
 
     BEGIN CATCH
 
-        SET @StatusCode = 9999;
+    SET @StatusCode = 9999;
 
-        SET @StatusMessage =
-            CONCAT
-            (
-                'SQL Error ',
-                ERROR_NUMBER(),
-                ': ',
-                ERROR_MESSAGE()
-            );
+    SET @StatusMessage =
+    CONCAT
+    (
+        'SQL Error ',
+        ERROR_NUMBER(),
+        ': ',
+        ERROR_MESSAGE()
+    );
+
+    SELECT
+        @StatusCode AS StatusCode,
+        @StatusMessage AS StatusMessage;
+
+    RETURN;
 
     END CATCH
 
 END;
-GO
