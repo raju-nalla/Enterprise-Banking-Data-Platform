@@ -4,8 +4,7 @@ Enterprise Banking Data Platform
 Banking Transaction Simulator
 
 Purpose:
-Main entry point for generating realistic banking
-transactions using the TransactionService.
+Main entry point for generating realistic banking transactions.
 
 Author:
 Raju Nalla
@@ -20,17 +19,13 @@ from simulator.generators.transaction_generator import TransactionGenerator
 from simulator.services.transaction_service import TransactionService
 from simulator.utils.database import DatabaseManager
 from simulator.utils.logger import Logger
+from simulator.utils.statistics import Statistics
+from simulator.utils.audit_logger import AuditLogger
 
 
 class BankingSimulator:
-    """
-    Enterprise Banking Simulator.
-    """
 
     def __init__(self):
-        """
-        Initialize simulator.
-        """
 
         self.logger = Logger.get_logger()
 
@@ -40,6 +35,10 @@ class BankingSimulator:
 
         self.transaction_service = TransactionService()
 
+        self.statistics = Statistics()
+
+        self.audit_logger = AuditLogger()
+
         self.accounts = []
 
     # -------------------------------------------------------
@@ -47,9 +46,6 @@ class BankingSimulator:
     # -------------------------------------------------------
 
     def connect(self):
-        """
-        Connect to SQL Server.
-        """
 
         self.db.connect()
 
@@ -62,9 +58,6 @@ class BankingSimulator:
     # -------------------------------------------------------
 
     def disconnect(self):
-        """
-        Close SQL Server connection.
-        """
 
         self.db.disconnect()
 
@@ -77,13 +70,9 @@ class BankingSimulator:
     # -------------------------------------------------------
 
     def load_accounts(self):
-        """
-        Load all active accounts.
-        """
 
         query = """
-        SELECT
-            AccountID
+        SELECT AccountID
         FROM core.Accounts
         WHERE AccountStatus='Active'
           AND IsActive=1
@@ -92,10 +81,7 @@ class BankingSimulator:
 
         rows = self.db.execute_query(query)
 
-        self.accounts = [
-            row.AccountID
-            for row in rows
-        ]
+        self.accounts = [row.AccountID for row in rows]
 
         self.logger.info(
             "Loaded %d active accounts.",
@@ -103,22 +89,15 @@ class BankingSimulator:
         )
 
     # -------------------------------------------------------
-    # Run Deposit
+    # Deposit
     # -------------------------------------------------------
 
     def run_deposit(self):
-        """
-        Execute one random deposit.
-        """
 
-        account_id = random.choice(
-            self.accounts
-        )
+        account_id = random.choice(self.accounts)
 
-        transaction = (
-            self.transaction_generator.generate_deposit(
-                account_id
-            )
+        transaction = self.transaction_generator.generate_deposit(
+            account_id
         )
 
         result = self.transaction_service.deposit(
@@ -133,9 +112,11 @@ class BankingSimulator:
 
         )
 
-        print()
+        result = result[0]
 
-        print("=" * 70)
+        status_code = result[4]
+
+        print("\n" + "=" * 70)
         print("DEPOSIT")
         print("=" * 70)
 
@@ -143,11 +124,6 @@ class BankingSimulator:
         print(f"Amount     : {transaction['Amount']}")
         print(f"Mode       : {transaction['TransactionMode']}")
         print(f"Remarks    : {transaction['Remarks']}")
-
-        print()
-
-
-        result = result[0]
 
         print("\nDATABASE RESULT")
         print("-" * 60)
@@ -159,30 +135,50 @@ class BankingSimulator:
         print(f"Status Code        : {result[4]}")
         print(f"Message            : {result[5]}")
 
+        self.audit_logger.log_transaction(
+
+            transaction_type="Deposit",
+
+            account_id=transaction["AccountID"],
+
+            amount=transaction["Amount"],
+
+            success=(status_code == 0)
+
+        )
+
+        self.statistics.record_deposit(
+            amount=transaction["Amount"],
+            success=(status_code == 0)
+        )
+
+    # -------------------------------------------------------
+    # Withdrawal
+    # -------------------------------------------------------
 
     def run_withdraw(self):
-        """
-        Execute one random withdrawal.
-        """
 
         account_id = random.choice(self.accounts)
 
-        transaction = (
-            self.transaction_generator.generate_withdrawal(
-                account_id
-            )
+        transaction = self.transaction_generator.generate_withdrawal(
+            account_id
         )
 
         result = self.transaction_service.withdraw(
 
             account_id=transaction["AccountID"],
+
             amount=transaction["Amount"],
+
             transaction_mode=transaction["TransactionMode"],
+
             remarks=transaction["Remarks"]
 
         )
 
         result = result[0]
+
+        status_code = result[4]
 
         print("\n" + "=" * 70)
         print("WITHDRAW")
@@ -197,25 +193,43 @@ class BankingSimulator:
         print("-" * 60)
 
         print(f"Transaction Number : {result[0]}")
-        print(f"Balance            : {result[1]}")
-        print(f"Status Code        : {result[2]}")
-        print(f"Message            : {result[3]}")
+        print(f"Account ID         : {result[1]}")
+        print(f"Account Number     : {result[2]}")
+        print(f"Balance            : {result[3]}")
+        print(f"Status Code        : {result[4]}")
+        print(f"Message            : {result[5]}")
 
-    def run_transfer(self):
-        """
-        Execute one random fund transfer.
-        """
+        self.audit_logger.log_transaction(
 
-        source, destination = random.sample(
-            self.accounts,
-            2
+            transaction_type="Withdrawal",
+
+            account_id=transaction["AccountID"],
+
+            amount=transaction["Amount"],
+
+            success=(status_code == 0)
+
         )
 
-        transaction = (
-            self.transaction_generator.generate_transfer(
-                source,
-                destination
-            )
+        self.statistics.record_withdrawal(
+            amount=transaction["Amount"],
+            success=(status_code == 0)
+        )
+
+    # -------------------------------------------------------
+    # Transfer
+    # -------------------------------------------------------
+
+    def run_transfer(self):
+
+        source, destination = random.sample(self.accounts, 2)
+
+        transaction = self.transaction_generator.generate_transfer(
+
+            source,
+
+            destination
+
         )
 
         result = self.transaction_service.transfer_funds(
@@ -234,6 +248,8 @@ class BankingSimulator:
 
         result = result[0]
 
+        status_code = result[6]
+
         print("\n" + "=" * 70)
         print("TRANSFER")
         print("=" * 70)
@@ -248,19 +264,35 @@ class BankingSimulator:
 
         print(f"Debit Transaction  : {result[0]}")
         print(f"Credit Transaction : {result[1]}")
-        print(f"Source Balance     : {result[2]}")
-        print(f"Destination Balance: {result[3]}")
-        print(f"Status Code        : {result[4]}")
-        print(f"Message            : {result[5]}")
+        print(f"Source Account     : {result[2]}")
+        print(f"Destination Account: {result[3]}")
+        print(f"Source Balance     : {result[4]}")
+        print(f"Destination Balance: {result[5]}")
+        print(f"Status Code        : {result[6]}")
+        print(f"Message            : {result[7]}")
+
+        self.audit_logger.log_transaction(
+
+            transaction_type="Transfer",
+
+            account_id=transaction["FromAccountID"],
+
+            amount=transaction["Amount"],
+
+            success=(status_code == 0)
+
+        )
+
+        self.statistics.record_transfer(
+            amount=transaction["Amount"],
+            success=(status_code == 0)
+        )
 
     # -------------------------------------------------------
     # Run Simulator
     # -------------------------------------------------------
 
     def run(self):
-        """
-        Main Simulator.
-        """
 
         self.connect()
 
@@ -273,9 +305,6 @@ class BankingSimulator:
         print(f"\nActive Accounts Loaded : {len(self.accounts)}")
         print(self.accounts)
 
-        print()
-
-        # Run 20 random transactions
         for _ in range(20):
 
             transaction_type = random.choice(
@@ -298,33 +327,12 @@ class BankingSimulator:
 
                 self.run_transfer()
 
-        self.disconnect()
-        """
-        Start Banking Simulator.
-        """
+        self.statistics.finish()
 
-        self.connect()
-
-        self.load_accounts()
-
-        print("=" * 70)
-        print("Enterprise Banking Simulator")
-        print("=" * 70)
-
-        print(
-            f"Active Accounts Loaded : {len(self.accounts)}"
-        )
-
-        print(self.accounts)
-
-        self.run_deposit()
+        self.statistics.print_summary()
 
         self.disconnect()
 
-
-# -------------------------------------------------------
-# Main
-# -------------------------------------------------------
 
 if __name__ == "__main__":
 
