@@ -6,7 +6,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-/***************************************************************************************************
+/******************************************************************************
 Project      : Enterprise Banking Data Platform
 Module       : Transaction Management
 Object Type  : Stored Procedure
@@ -14,7 +14,7 @@ Object Name  : dbo.usp_Deposit
 
 Author       : Raju Nalla
 Created On   : 11-Aug-2026
-Version      : 2.0
+Version      : 3.0
 
 Description:
 Deposits money into an active customer account and records the transaction.
@@ -36,7 +36,7 @@ Return Codes
 2003    Invalid Transaction Mode
 9999    Unexpected SQL Error
 
-***************************************************************************************************/
+******************************************************************************/
 
 CREATE OR ALTER PROCEDURE dbo.usp_Deposit
 (
@@ -57,20 +57,24 @@ DECLARE
       @CurrentBalance DECIMAL(18,2)
     , @NewBalance DECIMAL(18,2)
     , @TransactionNumber VARCHAR(30)
+    , @AccountNumber VARCHAR(20)
     , @StatusCode INT = -1
-    , @StatusMessage VARCHAR(200) = ''
-    , @AccountNumber VARCHAR(20);
+    , @StatusMessage VARCHAR(200) = '';
 
 BEGIN TRY
-
-    BEGIN TRANSACTION;
 
     ------------------------------------------------------------
     -- Clean Inputs
     ------------------------------------------------------------
 
-    SET @TransactionMode = UPPER(LTRIM(RTRIM(@TransactionMode)));
-    SET @Remarks = LEFT(LTRIM(RTRIM(ISNULL(@Remarks,''))),255);
+    SET @TransactionMode = LTRIM(RTRIM(@TransactionMode));
+
+    SET @Remarks =
+        LEFT
+        (
+            LTRIM(RTRIM(ISNULL(@Remarks,''))),
+            255
+        );
 
     ------------------------------------------------------------
     -- Validate Deposit Amount
@@ -79,18 +83,15 @@ BEGIN TRY
     IF @Amount <= 0
     BEGIN
 
-        SET @StatusCode = 2002;
-        SET @StatusMessage = 'Deposit amount must be greater than zero.';
-
         SELECT
-            NULL AS TransactionNumber,
-            NULL AS AccountID,
-            NULL AS AccountNumber,
-            NULL AS CurrentBalance,
-            @StatusCode AS StatusCode,
-            @StatusMessage AS StatusMessage;
 
-        ROLLBACK TRANSACTION;
+              NULL AS TransactionNumber
+            , NULL AS AccountID
+            , NULL AS AccountNumber
+            , NULL AS CurrentBalance
+            , 2002 AS StatusCode
+            , 'Deposit amount must be greater than zero.' AS StatusMessage;
+
         RETURN;
 
     END;
@@ -101,33 +102,34 @@ BEGIN TRY
 
     IF @TransactionMode NOT IN
     (
-        'CASH',
-        'CHEQUE',
-        'UPI',
-        'NEFT',
-        'RTGS',
-        'IMPS'
+          'Cash'
+        , 'ATM'
+        , 'Card'
+        , 'UPI'
+        , 'IMPS'
+        , 'NEFT'
+        , 'RTGS'
+        , 'Branch'
+        , 'Internal'
+        , 'Loan Disbursement'
     )
     BEGIN
 
-        SET @StatusCode = 2003;
-        SET @StatusMessage = 'Invalid Transaction Mode.';
-
         SELECT
-            NULL AS TransactionNumber,
-            NULL AS AccountID,
-            NULL AS AccountNumber,
-            NULL AS CurrentBalance,
-            @StatusCode AS StatusCode,
-            @StatusMessage AS StatusMessage;
 
-        ROLLBACK TRANSACTION;
+              NULL AS TransactionNumber
+            , NULL AS AccountID
+            , NULL AS AccountNumber
+            , NULL AS CurrentBalance
+            , 2003 AS StatusCode
+            , 'Invalid Transaction Mode.' AS StatusMessage;
+
         RETURN;
 
     END;
 
     ------------------------------------------------------------
-    -- Read Account
+    -- Validate Account
     ------------------------------------------------------------
 
     SELECT
@@ -135,7 +137,8 @@ BEGIN TRY
           @CurrentBalance = Balance
         , @AccountNumber = AccountNumber
 
-    FROM core.Accounts WITH (UPDLOCK, HOLDLOCK)
+    FROM core.Accounts
+    WITH (UPDLOCK, HOLDLOCK)
 
     WHERE AccountID = @AccountID
       AND AccountStatus = 'Active'
@@ -144,34 +147,36 @@ BEGIN TRY
     IF @CurrentBalance IS NULL
     BEGIN
 
-        SET @StatusCode = 2001;
-        SET @StatusMessage = 'Account not found or inactive.';
-
         SELECT
-            NULL AS TransactionNumber,
-            NULL AS AccountID,
-            NULL AS AccountNumber,
-            NULL AS CurrentBalance,
-            @StatusCode AS StatusCode,
-            @StatusMessage AS StatusMessage;
 
-        ROLLBACK TRANSACTION;
+              NULL AS TransactionNumber
+            , NULL AS AccountID
+            , NULL ASAccountNumber
+            , NULL AS CurrentBalance
+            , 2001 AS StatusCode
+            , 'Account not found or inactive.' AS StatusMessage;
+
         RETURN;
 
     END;
 
     ------------------------------------------------------------
-    -- Calculate Balance
+    -- Calculate New Balance
     ------------------------------------------------------------
 
     SET @NewBalance = @CurrentBalance + @Amount;
+
+    ------------------------------------------------------------
+    -- Begin Transaction
+    ------------------------------------------------------------
+
+    BEGIN TRANSACTION;
 
     ------------------------------------------------------------
     -- Update Account
     ------------------------------------------------------------
 
     UPDATE core.Accounts
-
     SET
 
           Balance = @NewBalance
@@ -228,14 +233,15 @@ BEGIN TRY
         , @Remarks
     );
 
+    ------------------------------------------------------------
+    -- Commit
+    ------------------------------------------------------------
+
     COMMIT TRANSACTION;
 
     ------------------------------------------------------------
     -- Success
     ------------------------------------------------------------
-
-    SET @StatusCode = 0;
-    SET @StatusMessage = 'Deposit completed successfully.';
 
     SELECT
 
@@ -243,8 +249,8 @@ BEGIN TRY
         , @AccountID AS AccountID
         , @AccountNumber AS AccountNumber
         , @NewBalance AS CurrentBalance
-        , @StatusCode AS StatusCode
-        , @StatusMessage AS StatusMessage;
+        , 0 AS StatusCode
+        , 'Deposit completed successfully.' AS StatusMessage;
 
 END TRY
 
@@ -253,25 +259,20 @@ BEGIN CATCH
     IF @@TRANCOUNT > 0
         ROLLBACK TRANSACTION;
 
-    SET @StatusCode = 9999;
-
-    SET @StatusMessage =
-        CONCAT
-        (
-            'SQL Error ',
-            ERROR_NUMBER(),
-            ': ',
-            ERROR_MESSAGE()
-        );
-
     SELECT
 
           NULL AS TransactionNumber
         , NULL AS AccountID
         , NULL AS AccountNumber
         , NULL AS CurrentBalance
-        , @StatusCode AS StatusCode
-        , @StatusMessage AS StatusMessage;
+        , 9999 AS StatusCode
+        , CONCAT
+          (
+                'SQL Error '
+              , ERROR_NUMBER()
+              , ': '
+              , ERROR_MESSAGE()
+          ) AS StatusMessage;
 
 END CATCH
 

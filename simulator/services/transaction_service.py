@@ -34,6 +34,9 @@ class TransactionService:
         processed_by_employee_id=None,
         remarks=None
     ):
+        """
+        Execute Deposit Stored Procedure.
+        """
 
         self.db.connect()
 
@@ -55,6 +58,7 @@ class TransactionService:
         finally:
 
             self.db.disconnect()
+            
 
     # -------------------------------------------------------
     # Withdraw

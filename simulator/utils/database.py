@@ -99,7 +99,7 @@ class DatabaseManager:
 
         if self.connection is None or self.cursor is None:
             raise Exception(
-                "Database connection is not established."
+                "Database connection has not been established"
             )
 
     # -------------------------------------------------------

@@ -14,7 +14,7 @@ Sprint:
 """
 
 import random
-
+from datetime import date, timedelta
 
 class TransactionGenerator:
     """
@@ -22,29 +22,32 @@ class TransactionGenerator:
     """
 
     DEPOSIT_MODES = [
-        "UPI",
         "Cash",
-        "Cheque",
+        "UPI",
         "NEFT",
         "RTGS",
-        "Internet Banking",
-        "Mobile Banking"
+        "IMPS",
+        "Branch",
+        "Internal",
+        "Loan Disbursement"
     ]
 
     WITHDRAWAL_MODES = [
+        "Cash",
         "ATM",
+        "Card",
         "UPI",
-        "Cheque",
-        "Branch",
-        "POS"
+        "NEFT",
+        "RTGS",
+        "IMPS"
     ]
 
     TRANSFER_MODES = [
         "UPI",
-        "IMPS",
         "NEFT",
         "RTGS",
-        "Internet Banking"
+        "IMPS",
+        "Internal"
     ]
 
     DEPOSIT_REMARKS = [
@@ -163,5 +166,25 @@ class TransactionGenerator:
             "Remarks": random.choice(
                 self.TRANSFER_REMARKS
             )
+
+        }
+
+
+    def generate_account_statement(self, account_id):
+        """
+        Generate Account Statement Request.
+        """
+
+        today = date.today()
+
+        days = random.randint(7, 90)
+
+        return {
+
+            "AccountID": account_id,
+
+            "FromDate": today - timedelta(days=days),
+
+            "ToDate": today
 
         }

@@ -159,3 +159,226 @@ pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL S
 2026-08-11 20:00:14,994 | INFO | Executing Stored Procedure : dbo.usp_GetAccountStatement
 2026-08-11 20:00:15,072 | INFO | Stored Procedure executed successfully.
 2026-08-11 20:00:15,072 | INFO | Database connection closed.
+2026-08-11 20:12:33,947 | INFO | Database connected successfully.
+2026-08-11 20:12:33,947 | INFO | Banking Simulator connected.
+2026-08-11 20:12:33,947 | INFO | Executing SQL Query.
+2026-08-11 20:12:34,008 | INFO | Loaded 7 active accounts.
+2026-08-11 20:12:34,008 | INFO | Database connection closed.
+2026-08-11 20:12:34,010 | INFO | Banking Simulator disconnected.
+2026-08-12 14:24:29,670 | INFO | Database connected successfully.
+2026-08-12 14:24:29,671 | INFO | Banking Simulator connected.
+2026-08-12 14:24:29,671 | INFO | Executing SQL Query.
+2026-08-12 14:24:29,860 | INFO | Loaded 7 active accounts.
+2026-08-12 14:24:29,882 | INFO | Database connected successfully.
+2026-08-12 14:24:29,882 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 14:24:32,113 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:24:32,114 | INFO | Database connection closed.
+2026-08-12 14:24:32,116 | INFO | Database connection closed.
+2026-08-12 14:24:32,116 | INFO | Banking Simulator disconnected.
+2026-08-12 14:28:21,072 | INFO | Database connected successfully.
+2026-08-12 14:28:21,072 | INFO | Banking Simulator connected.
+2026-08-12 14:28:21,072 | INFO | Executing SQL Query.
+2026-08-12 14:28:21,119 | INFO | Loaded 7 active accounts.
+2026-08-12 14:28:21,139 | INFO | Database connected successfully.
+2026-08-12 14:28:21,139 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 14:28:21,324 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:28:21,324 | INFO | Database connection closed.
+2026-08-12 14:29:06,510 | INFO | Database connected successfully.
+2026-08-12 14:29:06,510 | INFO | Banking Simulator connected.
+2026-08-12 14:29:06,511 | INFO | Executing SQL Query.
+2026-08-12 14:29:06,537 | INFO | Loaded 7 active accounts.
+2026-08-12 14:29:06,545 | INFO | Database connected successfully.
+2026-08-12 14:29:06,545 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 14:29:06,645 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:29:06,645 | INFO | Database connection closed.
+2026-08-12 14:29:06,647 | INFO | Database connection closed.
+2026-08-12 14:29:06,647 | INFO | Banking Simulator disconnected.
+2026-08-12 14:31:30,330 | INFO | Database connected successfully.
+2026-08-12 14:31:30,330 | INFO | Banking Simulator connected.
+2026-08-12 14:31:30,331 | INFO | Executing SQL Query.
+2026-08-12 14:31:30,452 | INFO | Loaded 7 active accounts.
+2026-08-12 14:31:30,485 | INFO | Database connected successfully.
+2026-08-12 14:31:30,485 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 14:31:30,699 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:31:30,703 | INFO | Database connection closed.
+2026-08-12 14:31:30,705 | INFO | Database connection closed.
+2026-08-12 14:31:30,705 | INFO | Banking Simulator disconnected.
+2026-08-12 14:33:33,260 | INFO | Database connected successfully.
+2026-08-12 14:33:33,260 | INFO | Banking Simulator connected.
+2026-08-12 14:33:33,260 | INFO | Executing SQL Query.
+2026-08-12 14:33:33,336 | INFO | Loaded 7 active accounts.
+2026-08-12 14:33:33,343 | INFO | Database connected successfully.
+2026-08-12 14:33:33,343 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 14:33:33,548 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:33:33,550 | INFO | Database connection closed.
+2026-08-12 14:33:33,551 | INFO | Database connection closed.
+2026-08-12 14:33:33,551 | INFO | Banking Simulator disconnected.
+2026-08-12 14:39:23,689 | INFO | Database connected successfully.
+2026-08-12 14:39:23,691 | INFO | Banking Simulator connected.
+2026-08-12 14:39:23,691 | INFO | Executing SQL Query.
+2026-08-12 14:39:23,925 | INFO | Loaded 7 active accounts.
+2026-08-12 14:39:23,987 | INFO | Database connected successfully.
+2026-08-12 14:39:23,987 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 14:39:35,079 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:39:35,083 | INFO | Database connection closed.
+2026-08-12 14:39:35,084 | INFO | Database connected successfully.
+2026-08-12 14:39:35,084 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 14:39:35,183 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:39:35,183 | INFO | Database connection closed.
+2026-08-12 14:45:53,938 | INFO | Database connected successfully.
+2026-08-12 14:45:53,938 | INFO | Banking Simulator connected.
+2026-08-12 14:45:53,938 | INFO | Executing SQL Query.
+2026-08-12 14:45:54,017 | INFO | Loaded 7 active accounts.
+2026-08-12 14:51:10,735 | INFO | Database connected successfully.
+2026-08-12 14:51:10,735 | INFO | Banking Simulator connected.
+2026-08-12 14:51:10,735 | INFO | Executing SQL Query.
+2026-08-12 14:51:10,780 | INFO | Loaded 7 active accounts.
+2026-08-12 14:51:10,780 | INFO | Database connected successfully.
+2026-08-12 14:51:10,780 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 14:51:11,786 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:51:11,786 | INFO | Database connection closed.
+2026-08-12 14:53:07,481 | INFO | Database connected successfully.
+2026-08-12 14:53:07,481 | INFO | Banking Simulator connected.
+2026-08-12 14:53:07,481 | INFO | Executing SQL Query.
+2026-08-12 14:53:07,512 | INFO | Loaded 7 active accounts.
+2026-08-12 14:56:49,836 | INFO | Database connected successfully.
+2026-08-12 14:56:49,836 | INFO | Banking Simulator connected.
+2026-08-12 14:56:49,836 | INFO | Executing SQL Query.
+2026-08-12 14:56:49,869 | INFO | Loaded 7 active accounts.
+2026-08-12 14:56:49,884 | INFO | Database connected successfully.
+2026-08-12 14:56:49,884 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 14:56:50,008 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:56:50,008 | INFO | Database connection closed.
+2026-08-12 14:56:50,008 | INFO | Database connected successfully.
+2026-08-12 14:56:50,008 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 14:56:50,054 | INFO | Stored Procedure executed successfully.
+2026-08-12 14:56:50,054 | INFO | Database connection closed.
+2026-08-12 15:00:14,851 | INFO | Database connected successfully.
+2026-08-12 15:00:14,866 | INFO | Banking Simulator connected.
+2026-08-12 15:00:14,866 | INFO | Executing SQL Query.
+2026-08-12 15:00:14,895 | INFO | Loaded 7 active accounts.
+2026-08-12 15:00:14,902 | INFO | Database connected successfully.
+2026-08-12 15:00:14,902 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 15:00:15,016 | INFO | Stored Procedure executed successfully.
+2026-08-12 15:00:15,017 | INFO | Database connection closed.
+2026-08-12 15:00:15,018 | INFO | Database connected successfully.
+2026-08-12 15:00:15,018 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 15:00:15,106 | INFO | Stored Procedure executed successfully.
+2026-08-12 15:00:15,106 | INFO | Database connection closed.
+2026-08-12 15:00:15,106 | INFO | Database connected successfully.
+2026-08-12 15:00:15,106 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 15:00:15,128 | INFO | Stored Procedure executed successfully.
+2026-08-12 15:00:15,128 | INFO | Database connection closed.
+2026-08-12 15:00:15,129 | INFO | Database connected successfully.
+2026-08-12 15:00:15,129 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 15:00:15,137 | INFO | Stored Procedure executed successfully.
+2026-08-12 15:00:15,137 | INFO | Database connection closed.
+2026-08-12 15:00:15,138 | INFO | Database connected successfully.
+2026-08-12 15:00:15,138 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 15:00:15,156 | INFO | Stored Procedure executed successfully.
+2026-08-12 15:00:15,156 | INFO | Database connection closed.
+2026-08-12 15:00:15,157 | INFO | Database connected successfully.
+2026-08-12 15:00:15,157 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 15:00:15,162 | ERROR | Stored Procedure failed : dbo.usp_Withdraw
+Traceback (most recent call last):
+  File "C:\Users\RAJU\Documents\Enterprise-Banking-Data-Platform\simulator\utils\database.py", line 208, in execute_procedure
+    if not self.cursor.nextset():
+           ^^^^^^^^^^^^^^^^^^^^^
+pyodbc.ProgrammingError: ('25000', '[25000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 0, current count = 1. (266) (SQLMoreResults)')
+2026-08-12 15:00:15,275 | INFO | Database connection closed.
+2026-08-12 16:10:36,760 | INFO | Database connected successfully.
+2026-08-12 16:10:36,760 | INFO | Banking Simulator connected.
+2026-08-12 16:10:36,760 | INFO | Executing SQL Query.
+2026-08-12 16:10:37,014 | INFO | Loaded 7 active accounts.
+2026-08-12 16:10:37,029 | INFO | Database connected successfully.
+2026-08-12 16:10:37,029 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 16:10:37,418 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:37,424 | INFO | Database connection closed.
+2026-08-12 16:10:37,427 | INFO | Database connected successfully.
+2026-08-12 16:10:37,427 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 16:10:37,509 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:37,509 | INFO | Database connection closed.
+2026-08-12 16:10:37,509 | INFO | Database connected successfully.
+2026-08-12 16:10:37,513 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 16:10:37,758 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:37,758 | INFO | Database connection closed.
+2026-08-12 16:10:37,758 | INFO | Database connected successfully.
+2026-08-12 16:10:37,761 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 16:10:37,879 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:37,879 | INFO | Database connection closed.
+2026-08-12 16:10:37,879 | INFO | Database connected successfully.
+2026-08-12 16:10:37,879 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 16:10:37,974 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:37,974 | INFO | Database connection closed.
+2026-08-12 16:10:37,974 | INFO | Database connected successfully.
+2026-08-12 16:10:37,974 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 16:10:38,067 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,067 | INFO | Database connection closed.
+2026-08-12 16:10:38,070 | INFO | Database connected successfully.
+2026-08-12 16:10:38,070 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 16:10:38,073 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,073 | INFO | Database connection closed.
+2026-08-12 16:10:38,073 | INFO | Database connected successfully.
+2026-08-12 16:10:38,073 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 16:10:38,078 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,083 | INFO | Database connection closed.
+2026-08-12 16:10:38,083 | INFO | Database connected successfully.
+2026-08-12 16:10:38,083 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 16:10:38,087 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,087 | INFO | Database connection closed.
+2026-08-12 16:10:38,087 | INFO | Database connected successfully.
+2026-08-12 16:10:38,087 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 16:10:38,260 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,260 | INFO | Database connection closed.
+2026-08-12 16:10:38,263 | INFO | Database connected successfully.
+2026-08-12 16:10:38,263 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 16:10:38,267 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,267 | INFO | Database connection closed.
+2026-08-12 16:10:38,275 | INFO | Database connected successfully.
+2026-08-12 16:10:38,276 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 16:10:38,284 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,284 | INFO | Database connection closed.
+2026-08-12 16:10:38,284 | INFO | Database connected successfully.
+2026-08-12 16:10:38,284 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 16:10:38,373 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,373 | INFO | Database connection closed.
+2026-08-12 16:10:38,377 | INFO | Database connected successfully.
+2026-08-12 16:10:38,377 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 16:10:38,389 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,389 | INFO | Database connection closed.
+2026-08-12 16:10:38,391 | INFO | Database connected successfully.
+2026-08-12 16:10:38,392 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 16:10:38,403 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,403 | INFO | Database connection closed.
+2026-08-12 16:10:38,405 | INFO | Database connected successfully.
+2026-08-12 16:10:38,405 | INFO | Executing Stored Procedure : dbo.usp_Withdraw
+2026-08-12 16:10:38,458 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,458 | INFO | Database connection closed.
+2026-08-12 16:10:38,458 | INFO | Database connected successfully.
+2026-08-12 16:10:38,458 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 16:10:38,557 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,557 | INFO | Database connection closed.
+2026-08-12 16:10:38,559 | INFO | Database connected successfully.
+2026-08-12 16:10:38,559 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 16:10:38,629 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,629 | INFO | Database connection closed.
+2026-08-12 16:10:38,630 | INFO | Database connected successfully.
+2026-08-12 16:10:38,630 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 16:10:38,639 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,639 | INFO | Database connection closed.
+2026-08-12 16:10:38,641 | INFO | Database connected successfully.
+2026-08-12 16:10:38,641 | INFO | Executing Stored Procedure : dbo.usp_TransferFunds
+2026-08-12 16:10:38,651 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,652 | INFO | Database connection closed.
+2026-08-12 16:10:38,653 | INFO | Database connection closed.
+2026-08-12 16:10:38,653 | INFO | Banking Simulator disconnected.
+2026-08-12 16:10:38,653 | INFO | Database connected successfully.
+2026-08-12 16:10:38,653 | INFO | Banking Simulator connected.
+2026-08-12 16:10:38,653 | INFO | Executing SQL Query.
+2026-08-12 16:10:38,663 | INFO | Loaded 7 active accounts.
+2026-08-12 16:10:38,667 | INFO | Database connected successfully.
+2026-08-12 16:10:38,667 | INFO | Executing Stored Procedure : dbo.usp_Deposit
+2026-08-12 16:10:38,755 | INFO | Stored Procedure executed successfully.
+2026-08-12 16:10:38,757 | INFO | Database connection closed.
+2026-08-12 16:10:38,757 | INFO | Database connection closed.
+2026-08-12 16:10:38,759 | INFO | Banking Simulator disconnected.

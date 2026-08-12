@@ -55,20 +55,21 @@ DECLARE
 
     , @OpeningBalance DECIMAL(18,2)
     , @ClosingBalance DECIMAL(18,2)
+    , @AvailableBalance DECIMAL(18,2)
 
     , @TotalDeposits DECIMAL(18,2)
     , @TotalWithdrawals DECIMAL(18,2)
     , @TotalTransfers DECIMAL(18,2)
-    , @TotalEMIPaid DECIMAL(18,2)
+    , @TotalEMIAmount DECIMAL(18,2)
     , @TotalFees DECIMAL(18,2)
 
     , @TransactionCount INT;
 
 BEGIN TRY
 
-    ----------------------------------------------------------
+    ------------------------------------------------------------
     -- Validate Date Range
-    ----------------------------------------------------------
+    ------------------------------------------------------------
 
     IF @FromDate > @ToDate
     BEGIN
@@ -77,66 +78,43 @@ BEGIN TRY
         SET @StatusMessage = 'From Date cannot be greater than To Date.';
 
         SELECT
-            NULL AS AccountID,
-            @StatusCode AS StatusCode,
-            @StatusMessage AS StatusMessage;
+              NULL AS AccountID
+            , @StatusCode AS StatusCode
+            , @StatusMessage AS StatusMessage;
 
         RETURN;
 
     END;
 
-    ----------------------------------------------------------
-    -- Validate Account Exists
-    ----------------------------------------------------------
+    ------------------------------------------------------------
+    -- Validate Account
+    ------------------------------------------------------------
 
     IF NOT EXISTS
     (
         SELECT 1
         FROM core.Accounts
         WHERE AccountID = @AccountID
+          AND AccountStatus = 'Active'
+          AND IsActive = 1
     )
     BEGIN
 
         SET @StatusCode = 3001;
-        SET @StatusMessage = 'Account not found.';
+        SET @StatusMessage = 'Account not found or inactive.';
 
         SELECT
-            NULL AS AccountID,
-            @StatusCode AS StatusCode,
-            @StatusMessage AS StatusMessage;
+              NULL AS AccountID
+            , @StatusCode AS StatusCode
+            , @StatusMessage AS StatusMessage;
 
         RETURN;
 
     END;
 
-    ----------------------------------------------------------
-    -- Validate Active Account
-    ----------------------------------------------------------
-
-    IF EXISTS
-    (
-        SELECT 1
-        FROM core.Accounts
-        WHERE AccountID = @AccountID
-          AND IsActive = 0
-    )
-    BEGIN
-
-        SET @StatusCode = 3002;
-        SET @StatusMessage = 'Account is inactive.';
-
-        SELECT
-            NULL AS AccountID,
-            @StatusCode AS StatusCode,
-            @StatusMessage AS StatusMessage;
-
-        RETURN;
-
-    END;
-
-    ----------------------------------------------------------
+    ------------------------------------------------------------
     -- Opening Balance
-    ----------------------------------------------------------
+    ------------------------------------------------------------
 
     SELECT TOP (1)
 
@@ -145,82 +123,104 @@ BEGIN TRY
     FROM transactions.Transactions
 
     WHERE AccountID = @AccountID
-      AND CAST(TransactionDate AS DATE) < @FromDate
+      AND TransactionDate < @FromDate
 
-    ORDER BY TransactionDate DESC;
+    ORDER BY
+          TransactionDate DESC
+        , TransactionID DESC;
 
     SET @OpeningBalance = ISNULL(@OpeningBalance,0);
 
-    ----------------------------------------------------------
+    ------------------------------------------------------------
     -- Closing Balance
-    ----------------------------------------------------------
+    ------------------------------------------------------------
 
     SELECT
-        @ClosingBalance = Balance
+
+          @ClosingBalance = Balance
+        , @AvailableBalance = AvailableBalance
+
     FROM core.Accounts
+
     WHERE AccountID = @AccountID;
 
-    ----------------------------------------------------------
-    -- Summary
-    ----------------------------------------------------------
+    ------------------------------------------------------------
+    -- Statement Summary
+    ------------------------------------------------------------
 
     SELECT
 
-        @TotalDeposits =
-            ISNULL(SUM(CASE
-                        WHEN TransactionType='Deposit'
-                        THEN Amount
-                       END),0),
+          @TotalDeposits =
+            SUM(CASE
+                    WHEN TransactionType='Deposit'
+                    THEN Amount
+                    ELSE 0
+                END)
 
-        @TotalWithdrawals =
-            ISNULL(SUM(CASE
-                        WHEN TransactionType='Withdrawal'
-                        THEN Amount
-                       END),0),
+        , @TotalWithdrawals =
+            SUM(CASE
+                    WHEN TransactionType='Withdrawal'
+                    THEN Amount
+                    ELSE 0
+                END)
 
-        @TotalTransfers =
-            ISNULL(SUM(CASE
-                        WHEN TransactionType='Transfer'
-                        THEN Amount
-                       END),0),
+        , @TotalTransfers =
+            SUM(CASE
+                    WHEN TransactionType='Transfer'
+                    THEN Amount
+                    ELSE 0
+                END)
 
-        @TotalEMIPaid =
-            ISNULL(SUM(CASE
-                        WHEN TransactionType='EMI'
-                        THEN Amount
-                       END),0),
+        , @TotalEMIAmount =
+            SUM(CASE
+                    WHEN TransactionType='EMI'
+                    THEN Amount
+                    ELSE 0
+                END)
 
-        @TotalFees =
-            ISNULL(SUM(CASE
-                        WHEN TransactionType='Fee'
-                        THEN Amount
-                       END),0),
+        , @TotalFees =
+            SUM(CASE
+                    WHEN TransactionType='Fee'
+                    THEN Amount
+                    ELSE 0
+                END)
 
-        @TransactionCount = COUNT(*)
+        , @TransactionCount = COUNT(*)
 
     FROM transactions.Transactions
 
     WHERE AccountID = @AccountID
-      AND CAST(TransactionDate AS DATE)
-      BETWEEN @FromDate AND @ToDate;
+      AND TransactionDate >= @FromDate
+      AND TransactionDate < DATEADD(DAY,1,@ToDate);
 
-    ----------------------------------------------------------
+    SET @TotalDeposits = ISNULL(@TotalDeposits,0);
+    SET @TotalWithdrawals = ISNULL(@TotalWithdrawals,0);
+    SET @TotalTransfers = ISNULL(@TotalTransfers,0);
+    SET @TotalEMIAmount = ISNULL(@TotalEMIAmount,0);
+    SET @TotalFees = ISNULL(@TotalFees,0);
+
+    ------------------------------------------------------------
     -- Success
-    ----------------------------------------------------------
+    ------------------------------------------------------------
 
     SET @StatusCode = 0;
     SET @StatusMessage = 'Account statement generated successfully.';
 
-    ----------------------------------------------------------
-    -- Result Set 1 : Statement Summary
-    ----------------------------------------------------------
+    ------------------------------------------------------------
+    -- Result Set 1
+    ------------------------------------------------------------
 
     SELECT
 
-          C.CustomerNumber
+          @StatusCode AS StatusCode
+        , @StatusMessage AS StatusMessage
+
+        , C.CustomerNumber
         , CONCAT(C.FirstName,' ',C.LastName) AS CustomerName
+
         , A.AccountNumber
         , A.AccountType
+
         , B.BranchCode
         , B.BranchName
 
@@ -229,37 +229,34 @@ BEGIN TRY
 
         , @OpeningBalance AS OpeningBalance
         , @ClosingBalance AS ClosingBalance
+        , @AvailableBalance AS AvailableBalance
 
         , @TransactionCount AS TotalTransactions
         , @TotalDeposits AS TotalDeposits
         , @TotalWithdrawals AS TotalWithdrawals
         , @TotalTransfers AS TotalTransfers
-        , @TotalEMIPaid AS TotalEMIPaid
+        , @TotalEMIAmount AS TotalEMIAmount
         , @TotalFees AS TotalFees
-
-        , A.AvailableBalance
-
-        , @StatusCode AS StatusCode
-        , @StatusMessage AS StatusMessage
 
     FROM core.Accounts A
 
-        INNER JOIN core.Customers C
-            ON A.CustomerID = C.CustomerID
+    INNER JOIN core.Customers C
+        ON A.CustomerID = C.CustomerID
 
-        INNER JOIN core.Branches B
-            ON A.BranchID = B.BranchID
+    INNER JOIN core.Branches B
+        ON A.BranchID = B.BranchID
 
     WHERE A.AccountID = @AccountID;
 
-    ----------------------------------------------------------
-    -- Result Set 2 : Transaction Details
-    ----------------------------------------------------------
+    ------------------------------------------------------------
+    -- Result Set 2
+    ------------------------------------------------------------
 
     SELECT
 
           TransactionID
         , TransactionNumber
+        , ProcessedByEmployeeID
         , TransactionDate
         , TransactionType
         , TransactionMode
@@ -271,8 +268,8 @@ BEGIN TRY
     FROM transactions.Transactions
 
     WHERE AccountID = @AccountID
-      AND CAST(TransactionDate AS DATE)
-          BETWEEN @FromDate AND @ToDate
+      AND TransactionDate >= @FromDate
+      AND TransactionDate < DATEADD(DAY,1,@ToDate)
 
     ORDER BY
           TransactionDate
@@ -302,4 +299,3 @@ BEGIN CATCH
 END CATCH
 
 END;
-GO
